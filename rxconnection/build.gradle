@@ -44,6 +44,7 @@ dependencies {
     apt "org.projectlombok:lombok:1.12.6"
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'com.google.code.gson:gson:2.7'
+    compile 'org.androidannotations:androidannotations-api:3.0.1'
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.0.14'
 
