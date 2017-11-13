@@ -3,9 +3,6 @@ package connection.rxconnection.connection;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.RootContext;
-
 import lombok.Getter;
 import lombok.Setter;
 import rx.Observable;
