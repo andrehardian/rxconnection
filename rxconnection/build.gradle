@@ -3,18 +3,14 @@ buildscript {
         jcenter()
     }
 
-    dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-    }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         minSdkVersion 17
@@ -41,7 +37,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
     provided 'org.projectlombok:lombok:1.12.6'
-    apt "org.projectlombok:lombok:1.12.6"
+    annotationProcessor "org.projectlombok:lombok:1.12.6"
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'com.google.code.gson:gson:2.7'
     compile 'org.androidannotations:androidannotations-api:3.0.1'
