@@ -14,7 +14,7 @@ public class Header {
         SessionLogin sessionLogin = new SessionLogin(context);
         Headers.Builder builder = new Headers.Builder();
         if (sessionLogin.getToken() != null) {
-            builder.add("token", sessionLogin.getToken());
+            builder.add("Authorization", sessionLogin.getToken());
         }
         return builder.build();
     }
