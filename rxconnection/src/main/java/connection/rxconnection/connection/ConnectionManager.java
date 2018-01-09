@@ -45,6 +45,21 @@ public class ConnectionManager implements CallBackSubscriber {
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
     }
+    protected void subscribe(HttpRequest httpRequest,String message) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(message);
+        }
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+        Observable.create(httpRequest)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
+    }
 
     @Override
     public void onServiceFinish() {
