@@ -7,8 +7,6 @@ buildscript {
 
 apply plugin: 'com.android.library'
 
-group='com.github.andrehardian'
-
 
 android {
     compileSdkVersion 25
