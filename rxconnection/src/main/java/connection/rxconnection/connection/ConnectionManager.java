@@ -2,9 +2,9 @@ package connection.rxconnection.connection;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 
 import lombok.Getter;
-import lombok.Setter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -15,10 +15,10 @@ import rx.schedulers.Schedulers;
 
 public class ConnectionManager implements CallBackSubscriber {
     @Getter
-    private Activity activity;
+    private Context context;
 
-    public ConnectionManager setActivity(Activity activity) {
-        this.activity = activity;
+    public ConnectionManager setContext(Context context) {
+        this.context = context;
         return this;
     }
 
@@ -33,7 +33,7 @@ public class ConnectionManager implements CallBackSubscriber {
 
     protected void subscribe(HttpRequest httpRequest) {
         if (progressDialog == null) {
-            progressDialog = new ProgressDialog(activity);
+            progressDialog = new ProgressDialog(context);
             progressDialog.setCancelable(false);
         }
         if (!progressDialog.isShowing()) {
@@ -45,9 +45,10 @@ public class ConnectionManager implements CallBackSubscriber {
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
     }
-    protected void subscribe(HttpRequest httpRequest,String message) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(activity);
+
+    protected void subscribe(HttpRequest httpRequest, String message) {
+        if (progressDialog == null && context != null) {
+            progressDialog = new ProgressDialog(context);
             progressDialog.setCancelable(false);
             progressDialog.setMessage(message);
         }

@@ -10,6 +10,6 @@ import connection.rxconnection.connection.ConnectionManager;
 
 public class ServiceManager extends ConnectionManager {
     public void login(LoginRequest loginRequest) {
-        subscribe(new LoginCon(loginRequest, getActivity()));
+        subscribe(new LoginCon(loginRequest, getContext()));
     }
 }

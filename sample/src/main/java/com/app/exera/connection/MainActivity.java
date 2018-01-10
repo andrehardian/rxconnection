@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
     }
 
     private void login() {
-        ((ServiceManager) new ServiceManager().setActivity(this).setConnectionListener(this))
+        ((ServiceManager) new ServiceManager().setContext(this).setConnectionListener(this))
                 .login(new LoginRequest().setUsername("test").setPassword("test"));
     }
 
