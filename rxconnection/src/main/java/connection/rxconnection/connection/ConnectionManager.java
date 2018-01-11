@@ -16,9 +16,14 @@ import rx.schedulers.Schedulers;
 public class ConnectionManager implements CallBackSubscriber {
     @Getter
     private Context context;
+    private boolean show = true;
 
     public ConnectionManager setContext(Context context) {
         this.context = context;
+        return this;
+    }
+    public ConnectionManager showDialog(boolean b) {
+        show = b;
         return this;
     }
 
@@ -36,7 +41,7 @@ public class ConnectionManager implements CallBackSubscriber {
             progressDialog = new ProgressDialog(context);
             progressDialog.setCancelable(false);
         }
-        if (!progressDialog.isShowing()) {
+        if (!progressDialog.isShowing() && show) {
             progressDialog.show();
         }
         Observable.create(httpRequest)
@@ -52,7 +57,7 @@ public class ConnectionManager implements CallBackSubscriber {
             progressDialog.setCancelable(false);
             progressDialog.setMessage(message);
         }
-        if (!progressDialog.isShowing()) {
+        if (!progressDialog.isShowing() && show) {
             progressDialog.show();
         }
         Observable.create(httpRequest)
