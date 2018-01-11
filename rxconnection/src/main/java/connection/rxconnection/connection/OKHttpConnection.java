@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import connection.rxconnection.model.BaseResponse;
+import lombok.Setter;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -24,6 +25,8 @@ import okhttp3.Response;
 
 public class OKHttpConnection<T, E> extends Header {
     private final HandleErrorConnection handleErrorConnection;
+    @Setter
+    private String multipartFileName;
 
     public OKHttpConnection(HandleErrorConnection handleErrorConnection) {
         this.handleErrorConnection = handleErrorConnection;
@@ -100,7 +103,7 @@ public class OKHttpConnection<T, E> extends Header {
     private RequestBody createBody(MediaType mediaType, T t) {
         if (t instanceof File) {
             File file = (File) t;
-            return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("image", file.getName(),
+            return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(multipartFileName, file.getName(),
                     RequestBody.create(mediaType, file)).build();
         } else {
             return RequestBody.create(mediaType, new Gson().toJson(t));

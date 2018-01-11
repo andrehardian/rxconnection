@@ -2,6 +2,8 @@ package connection.rxconnection.connection;
 
 import android.content.Context;
 
+import java.util.Map;
+
 import connection.rxconnection.model.BaseResponse;
 import lombok.Getter;
 import okhttp3.MediaType;
@@ -23,6 +25,8 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
     private final int httpMethod;
     private String userType;
     private Subscriber<? super BaseResponse<RESPONSE>> subscriber;
+    private Map<String,String> customHeader;
+    private String multipartFileName;
 
     public HttpRequest(REQUEST request, Context context, Class<RESPONSE> resultClass, String url,
                        int httpMethod) {
@@ -57,6 +61,15 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
         this.userType = userType;
         return this;
     }
+    public HttpRequest<REQUEST, RESPONSE> setCustomHeader(Map<String,String> customHeader) {
+        this.customHeader = customHeader;
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setMultipartFileName(String multipartFileName) {
+        this.multipartFileName = multipartFileName;
+        return this;
+    }
 
 
 
@@ -64,6 +77,8 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
     public void call(Subscriber<? super BaseResponse<RESPONSE>> subscriber) {
         this.subscriber = subscriber;
         BaseResponse<RESPONSE> response = null;
+        teokHttpConnection.setCustomHeader(customHeader);
+        teokHttpConnection.setMultipartFileName(multipartFileName);
         try {
             response = teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
         } catch (Exception e) {
