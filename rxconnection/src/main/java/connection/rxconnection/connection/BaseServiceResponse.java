@@ -47,7 +47,8 @@ public class BaseServiceResponse<RESPONSE> extends Subscriber<BaseResponse<RESPO
             } else if (responseBaseResponse.getCode() == 203) {
                 if (responseBaseResponse.getError() != null)
                     connectionListener.onMessageSuccess(responseBaseResponse.getError());
-            } else if (responseBaseResponse.getCode() == 204) {
+            } else if (responseBaseResponse.getCode() == 204
+                    || responseBaseResponse.getCode() == 201) {
                 connectionListener.onSuccessNull();
             }
         }
