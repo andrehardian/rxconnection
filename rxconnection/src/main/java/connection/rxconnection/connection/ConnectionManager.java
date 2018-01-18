@@ -1,6 +1,5 @@
 package connection.rxconnection.connection;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 
@@ -22,6 +21,7 @@ public class ConnectionManager implements CallBackSubscriber {
         this.context = context;
         return this;
     }
+
     public ConnectionManager showDialog(boolean b) {
         show = b;
         return this;
@@ -69,7 +69,7 @@ public class ConnectionManager implements CallBackSubscriber {
 
     @Override
     public void onServiceFinish() {
-        if (progressDialog != null) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }

@@ -37,8 +37,6 @@ public class BaseServiceResponse<RESPONSE> extends Subscriber<BaseResponse<RESPO
             } else {
                 connectionListener.onError(exceptionHttpRequest.getMessage());
             }
-        }else {
-            connectionListener.onError(e.getMessage());
         }
     }
 
