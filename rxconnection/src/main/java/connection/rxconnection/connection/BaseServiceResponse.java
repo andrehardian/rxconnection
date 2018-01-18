@@ -30,11 +30,15 @@ public class BaseServiceResponse<RESPONSE> extends Subscriber<BaseResponse<RESPO
     @Override
     public void onError(Throwable e) {
         callBackSubscriber.onServiceFinish();
-        ExceptionHttpRequest exceptionHttpRequest = (ExceptionHttpRequest) e;
-        if (exceptionHttpRequest.getResponse().code() == 401) {
-            connectionListener.unAuthorized();
-        } else {
-            connectionListener.onError(exceptionHttpRequest.getMessage());
+        if (e instanceof ExceptionHttpRequest) {
+            ExceptionHttpRequest exceptionHttpRequest = (ExceptionHttpRequest) e;
+            if (exceptionHttpRequest.getResponse().code() == 401) {
+                connectionListener.unAuthorized();
+            } else {
+                connectionListener.onError(exceptionHttpRequest.getMessage());
+            }
+        }else {
+            connectionListener.onError(e.getMessage());
         }
     }
 
