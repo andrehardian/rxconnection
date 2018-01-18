@@ -36,7 +36,8 @@ public class OKHttpConnection<T, E> extends Header {
     public BaseResponse data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
                              Context context) {
         OkHttpClient okHttpClient = new OkHttpClient();
-        OkHttpClient.Builder builder = okHttpClient.newBuilder();
+        OkHttpClient.Builder builder = okHttpClient.newBuilder().
+                addInterceptor(new LoggingInterceptor());
         builder.connectTimeout(1, TimeUnit.MINUTES);
         builder.readTimeout(1, TimeUnit.MINUTES);
         builder.writeTimeout(1, TimeUnit.MINUTES);
