@@ -38,8 +38,7 @@ public class OKHttpConnection<T, E> extends Header {
     public BaseResponse data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
                              Context context) {
         OkHttpClient okHttpClient = new OkHttpClient();
-        OkHttpClient.Builder builder = okHttpClient.newBuilder().
-                addInterceptor(new LoggingInterceptor(showInterceptor));
+        OkHttpClient.Builder builder = okHttpClient.newBuilder();
         builder.connectTimeout(1, TimeUnit.MINUTES);
         builder.readTimeout(1, TimeUnit.MINUTES);
         builder.writeTimeout(1, TimeUnit.MINUTES);
@@ -65,6 +64,7 @@ public class OKHttpConnection<T, E> extends Header {
             BaseResponse<E> baseResponse = null;
             response = okHttpClient.newCall(request).execute();
             String log = response.body().string();
+            printLog(request, response);
             try {
                 if (response.code() == 200) {
                     E json = null;
@@ -90,6 +90,20 @@ public class OKHttpConnection<T, E> extends Header {
 
         } catch (IOException e) {
             return catchSuccessNull(response, e.getMessage(), e);
+        }
+    }
+
+    private void printLog(Request request, Response response) {
+        if (showInterceptor) {
+            try {
+                String s = "Info\n" + "url : " + request.url() + "\nbody request : " + request.body().toString()
+                        + "\nrequest header : " + request.headers() +
+                        "\nresponse body : " + response.body().string();
+
+                System.out.println(s);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
