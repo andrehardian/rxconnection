@@ -27,13 +27,12 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
     private Subscriber<? super BaseResponse<RESPONSE>> subscriber;
     private Map<String,String> customHeader;
     private String multipartFileName;
+    private boolean logInfoRequestResponse;
 
-    public HttpRequest<REQUEST, RESPONSE> setPrintInterceptor(boolean printInterceptor) {
-        this.printInterceptor = printInterceptor;
+    public HttpRequest<REQUEST, RESPONSE> setLogInfoRequestResponse(boolean logInfoRequestResponse) {
+        this.logInfoRequestResponse = logInfoRequestResponse;
         return this;
     }
-
-    private boolean printInterceptor;
 
     public HttpRequest(REQUEST request, Context context, Class<RESPONSE> resultClass, String url,
                        int httpMethod) {
@@ -86,7 +85,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
         BaseResponse<RESPONSE> response = null;
         teokHttpConnection.setCustomHeader(customHeader);
         teokHttpConnection.setMultipartFileName(multipartFileName);
-        teokHttpConnection.setShowInterceptor(printInterceptor);
+        teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
         try {
             response = teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
         } catch (Exception e) {

@@ -1,6 +1,6 @@
 package com.app.exera.connection.connect;
 
-import com.app.exera.connection.model.LoginRequest;
+import com.app.exera.connection.model.RequestLogin;
 
 import connection.rxconnection.connection.ConnectionManager;
 
@@ -9,7 +9,7 @@ import connection.rxconnection.connection.ConnectionManager;
  */
 
 public class ServiceManager extends ConnectionManager {
-    public void login(LoginRequest loginRequest) {
-        subscribe(new LoginCon(loginRequest, getContext()));
+    public void login(RequestLogin loginRequest) {
+        subscribe(new LoginCon(loginRequest, getContext()).setLogInfoRequestResponse(true));
     }
 }

@@ -1,6 +1,7 @@
 package connection.rxconnection.connection;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,7 +29,7 @@ public class OKHttpConnection<T, E> extends Header {
     @Setter
     private String multipartFileName;
     @Setter
-    private boolean showInterceptor;
+    private boolean logInfoRequestResponse;
 
     public OKHttpConnection(HandleErrorConnection handleErrorConnection) {
         this.handleErrorConnection = handleErrorConnection;
@@ -64,7 +65,6 @@ public class OKHttpConnection<T, E> extends Header {
             BaseResponse<E> baseResponse = null;
             response = okHttpClient.newCall(request).execute();
             String log = response.body().string();
-            printLog(request, response);
             try {
                 if (response.code() == 200) {
                     E json = null;
@@ -79,6 +79,7 @@ public class OKHttpConnection<T, E> extends Header {
                         baseResponse.setCode(response.code());
                         baseResponse.setData(json);
                     }
+                    printLog(request, log);
                     return baseResponse;
                 } else {
                     return catchSuccessNull(response, log, null);
@@ -93,17 +94,17 @@ public class OKHttpConnection<T, E> extends Header {
         }
     }
 
-    private void printLog(Request request, Response response) {
-        if (showInterceptor) {
+    private void printLog(Request request, String response) {
+        if (logInfoRequestResponse) {
+            final String s = "Info\n" + "url : " + request.url() + "\nbody request : " + request.body().toString()
+                    + "\nrequest header : " + request.headers() +
+                    "\nresponse body : " + response;
             try {
-                String s = "Info\n" + "url : " + request.url() + "\nbody request : " + request.body().toString()
-                        + "\nrequest header : " + request.headers() +
-                        "\nresponse body : " + response.body().string();
-
-                System.out.println(s);
-            } catch (IOException e) {
+                Log.i("rxconnection_log",s);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
     }
 

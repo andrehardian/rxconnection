@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.app.exera.connection.connect.ServiceManager;
-import com.app.exera.connection.model.LoginRequest;
+import com.app.exera.connection.model.RequestLogin;
 
 import connection.rxconnection.connection.ConnectionListener;
 
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
 
     private void login() {
         ((ServiceManager) new ServiceManager().setContext(this).setConnectionListener(this))
-                .login(new LoginRequest().setUsername("test").setPassword("test"));
+                .login(new RequestLogin().setUsername("test@gmail.com").setPassword("12345"));
     }
 
     @Override
