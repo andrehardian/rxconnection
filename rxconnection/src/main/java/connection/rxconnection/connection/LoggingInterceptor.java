@@ -28,10 +28,10 @@ public class LoggingInterceptor implements Interceptor {
 
         long t1 = System.nanoTime();
         if (show) {
-            Log.d("rxCon request", String.format("Sending request %s on %s%n%s",
+            System.out.println(String.format("Sending request %s on %s%n%s",
                     request.url(), chain.connection(), request.headers()));
             long t2 = System.nanoTime();
-            Log.d("rxCon response", String.format("Received response for %s in %.1fms%n%s",
+            System.out.println(String.format("Received response for %s in %.1fms%n%s",
                     response.request().url(), (t2 - t1) / 1e6d, response.headers()));
 
         }
