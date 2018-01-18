@@ -28,6 +28,13 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
     private Map<String,String> customHeader;
     private String multipartFileName;
 
+    public HttpRequest<REQUEST, RESPONSE> setPrintInterceptor(boolean printInterceptor) {
+        this.printInterceptor = printInterceptor;
+        return this;
+    }
+
+    private boolean printInterceptor;
+
     public HttpRequest(REQUEST request, Context context, Class<RESPONSE> resultClass, String url,
                        int httpMethod) {
 //        super(f);
@@ -79,6 +86,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
         BaseResponse<RESPONSE> response = null;
         teokHttpConnection.setCustomHeader(customHeader);
         teokHttpConnection.setMultipartFileName(multipartFileName);
+        teokHttpConnection.setShowInterceptor(printInterceptor);
         try {
             response = teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
         } catch (Exception e) {

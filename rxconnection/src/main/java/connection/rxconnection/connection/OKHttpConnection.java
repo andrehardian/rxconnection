@@ -27,6 +27,8 @@ public class OKHttpConnection<T, E> extends Header {
     private final HandleErrorConnection handleErrorConnection;
     @Setter
     private String multipartFileName;
+    @Setter
+    private boolean showInterceptor;
 
     public OKHttpConnection(HandleErrorConnection handleErrorConnection) {
         this.handleErrorConnection = handleErrorConnection;
@@ -37,7 +39,7 @@ public class OKHttpConnection<T, E> extends Header {
                              Context context) {
         OkHttpClient okHttpClient = new OkHttpClient();
         OkHttpClient.Builder builder = okHttpClient.newBuilder().
-                addInterceptor(new LoggingInterceptor());
+                addInterceptor(new LoggingInterceptor(showInterceptor));
         builder.connectTimeout(1, TimeUnit.MINUTES);
         builder.readTimeout(1, TimeUnit.MINUTES);
         builder.writeTimeout(1, TimeUnit.MINUTES);

@@ -14,6 +14,12 @@ import okhttp3.Response;
  */
 
 public class LoggingInterceptor implements Interceptor {
+    private final boolean show;
+
+    public LoggingInterceptor(boolean show) {
+        this.show = show;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
@@ -21,7 +27,7 @@ public class LoggingInterceptor implements Interceptor {
         ;
 
         long t1 = System.nanoTime();
-        if (BuildConfig.DEBUG) {
+        if (show) {
             Log.d("rxCon request", String.format("Sending request %s on %s%n%s",
                     request.url(), chain.connection(), request.headers()));
             long t2 = System.nanoTime();
