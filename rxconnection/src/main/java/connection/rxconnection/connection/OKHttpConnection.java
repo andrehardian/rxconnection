@@ -66,7 +66,7 @@ public class OKHttpConnection<T, E> extends Header {
             response = okHttpClient.newCall(request).execute();
             String log = response.body().string();
             try {
-                if (response.code() == 200) {
+                if (response.code() == 200 || response.code() == 201) {
                     E json = null;
                     try {
                         json = new GsonBuilder().setLenient().create().fromJson(log, eClass);
@@ -109,7 +109,7 @@ public class OKHttpConnection<T, E> extends Header {
     }
 
     private BaseResponse catchSuccessNull(Response response, String error, Throwable throwable) {
-        if (response.code() == 203 || response.code() == 204 || response.code() == 201)
+        if (response.code() == 203 || response.code() == 204)
             return new BaseResponse<E>().setCode(response.code()).setError(error);
         else {
             ExceptionHttpRequest exceptionHttpRequest = new ExceptionHttpRequest(error, response, throwable);

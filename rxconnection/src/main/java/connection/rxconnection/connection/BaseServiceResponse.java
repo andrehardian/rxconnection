@@ -44,13 +44,12 @@ public class BaseServiceResponse<RESPONSE> extends Subscriber<BaseResponse<RESPO
     public void onNext(BaseResponse<RESPONSE> responseBaseResponse) {
         callBackSubscriber.onServiceFinish();
         if (responseBaseResponse != null) {
-            if (responseBaseResponse.getCode() == 200) {
+            if (responseBaseResponse.getCode() == 200 || responseBaseResponse.getCode() == 201) {
                 connectionListener.onSuccessWithData(responseBaseResponse.getData());
             } else if (responseBaseResponse.getCode() == 203) {
                 if (responseBaseResponse.getError() != null)
                     connectionListener.onMessageSuccess(responseBaseResponse.getError());
-            } else if (responseBaseResponse.getCode() == 204
-                    || responseBaseResponse.getCode() == 201) {
+            } else if (responseBaseResponse.getCode() == 204) {
                 connectionListener.onSuccessNull();
             }
         }
