@@ -100,7 +100,7 @@ public class OKHttpConnection<T, E> extends Header {
                     + "\nrequest header : " + request.headers() +
                     "\nresponse body : " + response;
             try {
-                Log.i("rxconnection_log",s);
+                Log.i("rxconnection_log", s);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -109,7 +109,7 @@ public class OKHttpConnection<T, E> extends Header {
     }
 
     private BaseResponse catchSuccessNull(Response response, String error, Throwable throwable) {
-        if (response.code() == 203)
+        if (response.code() == 203 || response.code() == 204 || response.code() == 201)
             return new BaseResponse<E>().setCode(response.code()).setError(error);
         else {
             ExceptionHttpRequest exceptionHttpRequest = new ExceptionHttpRequest(error, response, throwable);
