@@ -75,9 +75,9 @@ public class OKHttpConnection<T, E> extends Header {
                         e.printStackTrace();
                         json = (E) log;
                     }
+                    baseResponse = new BaseResponse();
+                    baseResponse.setCode(response.code());
                     if (json != null) {
-                        baseResponse = new BaseResponse();
-                        baseResponse.setCode(response.code());
                         baseResponse.setData(json);
                     }
                     printLog(request, log);
