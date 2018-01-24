@@ -110,7 +110,7 @@ public class OKHttpConnection<T, E> extends Header {
     }
 
     private BaseResponse catchSuccessNull(Response response, String error, Throwable throwable) {
-        if (String.valueOf(response.code()).startsWith("2"))
+        if (response != null && String.valueOf(response.code()).startsWith("2"))
             return new BaseResponse<E>().setCode(response.code()).setError(error);
         else {
             ExceptionHttpRequest exceptionHttpRequest = new ExceptionHttpRequest(error, response, throwable);

@@ -1,6 +1,7 @@
 package connection.rxconnection.connection;
 
 import connection.rxconnection.model.BaseResponse;
+import okhttp3.Response;
 import rx.Subscriber;
 
 /**
@@ -32,7 +33,8 @@ public class BaseServiceResponse<RESPONSE> extends Subscriber<BaseResponse<RESPO
         callBackSubscriber.onServiceFinish();
         if (e instanceof ExceptionHttpRequest) {
             ExceptionHttpRequest exceptionHttpRequest = (ExceptionHttpRequest) e;
-            if (exceptionHttpRequest.getResponse().code() == 401) {
+            Response response = exceptionHttpRequest.getResponse();
+            if (response != null && response.code() == 401) {
                 connectionListener.unAuthorized();
             } else {
                 connectionListener.onError(exceptionHttpRequest.getMessage());
