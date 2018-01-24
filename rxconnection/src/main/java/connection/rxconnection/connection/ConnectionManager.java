@@ -37,12 +37,16 @@ public class ConnectionManager implements CallBackSubscriber {
     private ProgressDialog progressDialog;
 
     protected void subscribe(HttpRequest httpRequest) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setCancelable(false);
-        }
-        if (!progressDialog.isShowing() && show) {
-            progressDialog.show();
+        try {
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setCancelable(false);
+            }
+            if (!progressDialog.isShowing() && show) {
+                progressDialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         Observable.create(httpRequest)
                 .subscribeOn(Schedulers.newThread())
