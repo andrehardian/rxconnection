@@ -52,13 +52,17 @@ public class ConnectionManager implements CallBackSubscriber {
     }
 
     protected void subscribe(HttpRequest httpRequest, String message) {
-        if (progressDialog == null && context != null) {
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(message);
-        }
-        if (!progressDialog.isShowing() && show) {
-            progressDialog.show();
+        try {
+            if (progressDialog == null && context != null) {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage(message);
+            }
+            if (!progressDialog.isShowing() && show) {
+                progressDialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         Observable.create(httpRequest)
                 .subscribeOn(Schedulers.newThread())
