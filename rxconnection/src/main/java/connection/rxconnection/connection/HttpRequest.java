@@ -7,6 +7,7 @@ import java.util.Map;
 import connection.rxconnection.model.BaseResponse;
 import lombok.Getter;
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -14,7 +15,7 @@ import rx.Subscriber;
  * Created by AndreHF on 4/12/2017.
  */
 
-public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Observable.OnSubscribe<BaseResponse<RESPONSE>> {
+public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Observable.OnSubscribe<BaseResponse<RESPONSE>> {
     private REQUEST request;
     private OKHttpConnection<REQUEST, RESPONSE> teokHttpConnection;
     @Getter
@@ -25,12 +26,22 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
     private final int httpMethod;
     private String userType;
     private Subscriber<? super BaseResponse<RESPONSE>> subscriber;
-    private Map<String,String> customHeader;
+    private Map<String, String> customHeader;
     private String multipartFileName;
     private boolean logInfoRequestResponse;
+    private boolean usingSSL;
+    private String domainNameSSL;
+    private String certificateSSL;
 
     public HttpRequest<REQUEST, RESPONSE> setLogInfoRequestResponse(boolean logInfoRequestResponse) {
         this.logInfoRequestResponse = logInfoRequestResponse;
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> usingSSL(boolean usingSSL, String domainNameSSl, String certificateSSl) {
+        this.usingSSL = usingSSL;
+        this.domainNameSSL = domainNameSSl;
+        this.certificateSSL = certificateSSl;
         return this;
     }
 
@@ -67,7 +78,8 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
         this.userType = userType;
         return this;
     }
-    public HttpRequest<REQUEST, RESPONSE> setCustomHeader(Map<String,String> customHeader) {
+
+    public HttpRequest<REQUEST, RESPONSE> setCustomHeader(Map<String, String> customHeader) {
         this.customHeader = customHeader;
         return this;
     }
@@ -78,7 +90,6 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
     }
 
 
-
     @Override
     public void call(Subscriber<? super BaseResponse<RESPONSE>> subscriber) {
         this.subscriber = subscriber;
@@ -87,7 +98,10 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
         teokHttpConnection.setMultipartFileName(multipartFileName);
         teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
         try {
-            response = teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
+            response = usingSSL ? teokHttpConnection.
+                    dataUsingSSl(request, url, eClass, httpMethod, mediaType, context,
+                            domainNameSSL, certificateSSL) :
+                    teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
         } catch (Exception e) {
             e.printStackTrace();
             response = new BaseResponse<>();
@@ -100,4 +114,9 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection,Obs
     public void error(ExceptionHttpRequest exceptionHttpRequest) {
         subscriber.onError(exceptionHttpRequest);
     }
+
+    public OkHttpClient getOkhttpClient() {
+        return teokHttpConnection.getOkHttpClient();
+    }
+
 }
