@@ -2,6 +2,7 @@ package com.app.exera.connection;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.app.exera.connection.connect.ServiceManager;
 import com.app.exera.connection.model.RequestLogin;
@@ -19,26 +20,25 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
 
     private void login() {
         ((ServiceManager) new ServiceManager().setContext(this).setConnectionListener(this))
-                .login(new RequestLogin().setUsername("test@gmail.com").setPassword("12345"));
+                .login(new RequestLogin().setUsername("kanibal@me.com").setPassword("kanibal"));
     }
 
     @Override
     public void onSuccessWithData(Object o) {
-//        success 200
     }
 
     @Override
     public void onSuccessNull() {
-//success 204
+        Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onMessageSuccess(String s) {
-//success 203
     }
 
     @Override
     public void onError(Object o) {
+        Toast.makeText(this,(String)o,Toast.LENGTH_LONG);
 //error 400,403,500,etc
     }
 

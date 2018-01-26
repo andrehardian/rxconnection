@@ -29,21 +29,12 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Ob
     private Map<String, String> customHeader;
     private String multipartFileName;
     private boolean logInfoRequestResponse;
-    private boolean usingSSL;
-    private String domainNameSSL;
-    private String certificateSSL;
 
     public HttpRequest<REQUEST, RESPONSE> setLogInfoRequestResponse(boolean logInfoRequestResponse) {
         this.logInfoRequestResponse = logInfoRequestResponse;
         return this;
     }
 
-    public HttpRequest<REQUEST, RESPONSE> usingSSL(boolean usingSSL, String domainNameSSl, String certificateSSl) {
-        this.usingSSL = usingSSL;
-        this.domainNameSSL = domainNameSSl;
-        this.certificateSSL = certificateSSl;
-        return this;
-    }
 
     public HttpRequest(REQUEST request, Context context, Class<RESPONSE> resultClass, String url,
                        int httpMethod) {
@@ -98,9 +89,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Ob
         teokHttpConnection.setMultipartFileName(multipartFileName);
         teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
         try {
-            response = usingSSL ? teokHttpConnection.
-                    dataUsingSSl(request, url, eClass, httpMethod, mediaType, context,
-                            domainNameSSL, certificateSSL) :
+            response =
                     teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
         } catch (Exception e) {
             e.printStackTrace();

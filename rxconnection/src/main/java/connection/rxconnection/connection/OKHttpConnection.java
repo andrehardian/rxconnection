@@ -50,6 +50,7 @@ public class OKHttpConnection<T, E> extends Header {
 
     public BaseResponse data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
                              Context context) {
+        okHttpClient = getUnsafeOkHttpClient();
         OkHttpClient.Builder builder = okHttpClient.newBuilder();
         builder.connectTimeout(1, TimeUnit.MINUTES);
         builder.readTimeout(1, TimeUnit.MINUTES);
@@ -57,17 +58,6 @@ public class OKHttpConnection<T, E> extends Header {
         return execute(t, url, eClass, httpMethod, mediaType, context);
     }
 
-    public BaseResponse dataUsingSSl(T t, String url, Class<E> eClass, int httpMethod,
-                                     MediaType mediaType,
-                                     Context context, String domainName, String certifitace) {
-        TrustCertificate.trustAllSslClient(okHttpClient);
-        OkHttpClient.Builder builder = okHttpClient.newBuilder();
-        builder.connectTimeout(1, TimeUnit.MINUTES);
-        builder.readTimeout(1, TimeUnit.MINUTES);
-        builder.writeTimeout(1, TimeUnit.MINUTES);
-        builder.certificatePinner(new CertificatePinner.Builder().add(domainName, certifitace).build());
-        return execute(t, url, eClass, httpMethod, mediaType, context);
-    }
 
     private BaseResponse execute(T t, String url, Class<E> eClass,
                                  int httpMethod, MediaType mediaType, Context context) {
@@ -158,7 +148,6 @@ public class OKHttpConnection<T, E> extends Header {
         }
     }
 
-/*
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains
@@ -201,7 +190,6 @@ public class OKHttpConnection<T, E> extends Header {
             throw new RuntimeException(e);
         }
     }
-*/
 
 
 }
