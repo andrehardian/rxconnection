@@ -5,6 +5,5 @@ package com.app.exera.connection.connect;
  */
 
 public class URL {
-    public static final String LOGIN = "https://api-v2-development.ap-southeast-1." +
-            "elasticbeanstalk.com/oauth/token";
+    public static final String LOGIN = "";
 }
