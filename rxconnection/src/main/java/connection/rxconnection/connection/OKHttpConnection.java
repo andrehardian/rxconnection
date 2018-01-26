@@ -50,7 +50,6 @@ public class OKHttpConnection<T, E> extends Header {
 
     public BaseResponse data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
                              Context context) {
-        TrustCertificate.trustAllSslClient(okHttpClient);
         OkHttpClient.Builder builder = okHttpClient.newBuilder();
         builder.connectTimeout(1, TimeUnit.MINUTES);
         builder.readTimeout(1, TimeUnit.MINUTES);
@@ -58,6 +57,17 @@ public class OKHttpConnection<T, E> extends Header {
         return execute(t, url, eClass, httpMethod, mediaType, context);
     }
 
+    public BaseResponse dataUsingSSl(T t, String url, Class<E> eClass, int httpMethod,
+                                     MediaType mediaType,
+                                     Context context, String domainName, String certifitace) {
+        TrustCertificate.trustAllSslClient(okHttpClient);
+        OkHttpClient.Builder builder = okHttpClient.newBuilder();
+        builder.connectTimeout(1, TimeUnit.MINUTES);
+        builder.readTimeout(1, TimeUnit.MINUTES);
+        builder.writeTimeout(1, TimeUnit.MINUTES);
+        builder.certificatePinner(new CertificatePinner.Builder().add(domainName, certifitace).build());
+        return execute(t, url, eClass, httpMethod, mediaType, context);
+    }
 
     private BaseResponse execute(T t, String url, Class<E> eClass,
                                  int httpMethod, MediaType mediaType, Context context) {
@@ -147,6 +157,51 @@ public class OKHttpConnection<T, E> extends Header {
             return RequestBody.create(mediaType, new Gson().toJson(t));
         }
     }
+
+/*
+    private static OkHttpClient getUnsafeOkHttpClient() {
+        try {
+            // Create a trust manager that does not validate certificate chains
+            final TrustManager[] trustAllCerts = new TrustManager[] {
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
+                                                       String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    }
+            };
+
+            // Install the all-trusting trust manager
+            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            // Create an ssl socket factory with our all-trusting manager
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
+            builder.hostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            });
+
+            OkHttpClient okHttpClient = builder.build();
+            return okHttpClient;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+*/
 
 
 }
