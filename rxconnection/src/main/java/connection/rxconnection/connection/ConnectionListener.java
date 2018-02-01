@@ -5,7 +5,7 @@ package connection.rxconnection.connection;
  */
 
 public interface ConnectionListener {
-    void onSuccessWithData(Object o, HttpRequest httpRequest);
+    void onSuccessWithData(Object o);
     void onSuccessNull();
     void onMessageSuccess(String s);
     void onError(Object o, HttpRequest httpRequest);

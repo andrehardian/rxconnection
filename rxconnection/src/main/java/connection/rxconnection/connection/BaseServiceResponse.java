@@ -49,8 +49,7 @@ public class BaseServiceResponse<RESPONSE> extends Subscriber<BaseResponse<RESPO
         if (responseBaseResponse != null) {
             if (String.valueOf(responseBaseResponse.getCode()).startsWith("2")) {
                 if (responseBaseResponse.getData() != null)
-                    connectionListener.onSuccessWithData(responseBaseResponse.getData(),
-                            responseBaseResponse.getHttpRequest());
+                    connectionListener.onSuccessWithData(responseBaseResponse.getData());
                 else if (responseBaseResponse.getError() != null)
                     connectionListener.onMessageSuccess(responseBaseResponse.getError());
                 else
