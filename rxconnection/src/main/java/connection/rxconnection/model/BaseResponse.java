@@ -11,6 +11,7 @@ public class BaseResponse<E> {
     private String error;
     private int code;
     private E data;
+    private HttpRequest httpRequest;
 
     public BaseResponse<E> setCode(int code) {
         this.code = code;
