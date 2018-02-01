@@ -56,6 +56,7 @@ public class ConnectionManager implements CallBackSubscriber {
     }
 
     protected void subscribe(HttpRequest httpRequest, String message) {
+
         try {
             if (progressDialog == null && context != null) {
                 progressDialog = new ProgressDialog(context);
@@ -68,7 +69,7 @@ public class ConnectionManager implements CallBackSubscriber {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Observable.create(httpRequest)
+        Observable.create(httpRequest.setMessage(message))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

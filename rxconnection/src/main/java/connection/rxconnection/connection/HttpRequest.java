@@ -30,6 +30,14 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Ob
     private String multipartFileName;
     private boolean logInfoRequestResponse;
 
+    public HttpRequest<REQUEST, RESPONSE> setMessage(String message) {
+        this.message = message;
+        return this;
+    }
+
+    @Getter
+    private String message;
+
     public HttpRequest<REQUEST, RESPONSE> setLogInfoRequestResponse(boolean logInfoRequestResponse) {
         this.logInfoRequestResponse = logInfoRequestResponse;
         return this;
