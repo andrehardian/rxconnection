@@ -101,6 +101,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Ob
 
     @Override
     public void error(ExceptionHttpRequest exceptionHttpRequest) {
+        exceptionHttpRequest.setHttpRequest(this);
         subscriber.onError(exceptionHttpRequest);
     }
 

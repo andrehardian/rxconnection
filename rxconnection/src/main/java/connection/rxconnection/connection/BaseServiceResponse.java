@@ -35,9 +35,10 @@ public class BaseServiceResponse<RESPONSE> extends Subscriber<BaseResponse<RESPO
             ExceptionHttpRequest exceptionHttpRequest = (ExceptionHttpRequest) e;
             Response response = exceptionHttpRequest.getResponse();
             if (response != null && response.code() == 401) {
-                connectionListener.unAuthorized();
+                connectionListener.unAuthorized(exceptionHttpRequest.getHttpRequest());
             } else {
-                connectionListener.onError(exceptionHttpRequest.getMessage());
+                connectionListener.onError(exceptionHttpRequest.getMessage(),
+                        exceptionHttpRequest.getHttpRequest());
             }
         }
     }

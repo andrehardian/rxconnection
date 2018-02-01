@@ -1,5 +1,6 @@
 package connection.rxconnection.model;
 
+import connection.rxconnection.connection.HttpRequest;
 import lombok.Data;
 
 /**

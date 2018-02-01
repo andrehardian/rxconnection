@@ -3,6 +3,7 @@ package connection.rxconnection.connection;
 import java.io.IOException;
 
 import lombok.Getter;
+import lombok.Setter;
 import okhttp3.Response;
 
 /**
@@ -20,6 +21,8 @@ public class ExceptionHttpRequest extends RuntimeException {
     private final Response response;
     @Getter
     private Kind kind;
+    @Getter@Setter
+    private HttpRequest httpRequest;
 
     public ExceptionHttpRequest(
             String message, String url, Response response,

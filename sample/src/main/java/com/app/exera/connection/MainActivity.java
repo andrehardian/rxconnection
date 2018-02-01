@@ -8,6 +8,7 @@ import com.app.exera.connection.connect.ServiceManager;
 import com.app.exera.connection.model.RequestLogin;
 
 import connection.rxconnection.connection.ConnectionListener;
+import connection.rxconnection.connection.HttpRequest;
 
 public class MainActivity extends AppCompatActivity implements ConnectionListener {
 
@@ -37,13 +38,13 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
     }
 
     @Override
-    public void onError(Object o) {
+    public void onError(Object o, HttpRequest httpRequest) {
         Toast.makeText(this,(String)o,Toast.LENGTH_LONG);
 //error 400,403,500,etc
     }
 
     @Override
-    public void unAuthorized() {
+    public void unAuthorized(HttpRequest httpRequest) {
 //error 401 auto logout unauthorized
     }
 }
