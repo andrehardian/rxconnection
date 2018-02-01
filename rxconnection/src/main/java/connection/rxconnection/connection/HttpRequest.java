@@ -104,7 +104,6 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Ob
             response = new BaseResponse<>();
             response.setError(e.getMessage());
         }
-        response.setHttpRequest(this);
         subscriber.onNext(response);
     }
 
