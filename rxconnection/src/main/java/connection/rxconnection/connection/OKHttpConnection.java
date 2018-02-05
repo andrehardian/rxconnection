@@ -114,10 +114,10 @@ public class OKHttpConnection<T, E> extends Header {
 
     private void printLog(Request request, String response) {
         if (logInfoRequestResponse) {
-            final String s = "Info\n" + "url : " + request.url() + "\nbody request : " + request.body().toString()
-                    + "\nrequest header : " + request.headers() +
-                    "\nresponse body : " + response;
             try {
+                final String s = "Info\n" + "url : " + request.url() + "\nbody request : " + request.body().toString()
+                        + "\nrequest header : " + request.headers() +
+                        "\nresponse body : " + response;
                 Log.i("rxconnection_log", s);
             } catch (Exception e) {
                 e.printStackTrace();
