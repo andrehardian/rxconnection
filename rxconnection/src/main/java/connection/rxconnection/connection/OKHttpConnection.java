@@ -22,7 +22,6 @@ import javax.net.ssl.X509TrustManager;
 import connection.rxconnection.model.BaseResponse;
 import lombok.Getter;
 import lombok.Setter;
-import okhttp3.CertificatePinner;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -84,6 +83,7 @@ public class OKHttpConnection<T, E> extends Header {
             response = okHttpClient.newCall(request).execute();
             String log = response.body().string();
             String code = String.valueOf(response.code());
+            printLog(request, log);
             try {
                 if (code.startsWith("2")) {
                     E json = null;
@@ -98,7 +98,6 @@ public class OKHttpConnection<T, E> extends Header {
                     if (json != null) {
                         baseResponse.setData(json);
                     }
-                    printLog(request, log);
                     return baseResponse;
                 } else {
                     return catchSuccessNull(response, log, null);
@@ -151,7 +150,7 @@ public class OKHttpConnection<T, E> extends Header {
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains
-            final TrustManager[] trustAllCerts = new TrustManager[] {
+            final TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         @Override
                         public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
@@ -176,7 +175,7 @@ public class OKHttpConnection<T, E> extends Header {
             final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager)trustAllCerts[0]);
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
             builder.hostnameVerifier(new HostnameVerifier() {
                 @Override
                 public boolean verify(String hostname, SSLSession session) {
