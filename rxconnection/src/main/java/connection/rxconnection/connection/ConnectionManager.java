@@ -79,7 +79,11 @@ public class ConnectionManager implements CallBackSubscriber {
     @Override
     public void onServiceFinish() {
         if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
+            try {
+                progressDialog.dismiss();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
