@@ -87,7 +87,8 @@ public class ConnectionManager implements CallBackSubscriber {
                 e.printStackTrace();
             }
         } else {
-            requestSize -= 1;
+            if (requestSize > 1)
+                requestSize -= 1;
         }
     }
 }
