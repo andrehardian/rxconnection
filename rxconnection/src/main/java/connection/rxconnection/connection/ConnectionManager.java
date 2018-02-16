@@ -71,6 +71,7 @@ public class ConnectionManager implements CallBackSubscriber {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        requestSize += 1;
         Observable.create(httpRequest.setMessage(message))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
