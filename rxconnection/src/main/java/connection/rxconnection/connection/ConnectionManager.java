@@ -16,6 +16,7 @@ public class ConnectionManager implements CallBackSubscriber {
     @Getter
     private Context context;
     private boolean show = true;
+    private int requestSize = 0;
 
     public ConnectionManager setContext(Context context) {
         this.context = context;
@@ -48,6 +49,7 @@ public class ConnectionManager implements CallBackSubscriber {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        requestSize += 1;
         Observable.create(httpRequest)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -78,12 +80,14 @@ public class ConnectionManager implements CallBackSubscriber {
 
     @Override
     public void onServiceFinish() {
-        if (progressDialog != null && progressDialog.isShowing()) {
+        if (progressDialog != null && progressDialog.isShowing() && requestSize == 1) {
             try {
                 progressDialog.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            requestSize -= 1;
         }
     }
 }
