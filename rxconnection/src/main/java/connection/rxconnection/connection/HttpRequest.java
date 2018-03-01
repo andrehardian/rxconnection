@@ -16,6 +16,7 @@ import rx.Subscriber;
  */
 
 public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Observable.OnSubscribe<BaseResponse<RESPONSE>> {
+    @Getter
     private REQUEST request;
     private OKHttpConnection<REQUEST, RESPONSE> teokHttpConnection;
     @Getter
