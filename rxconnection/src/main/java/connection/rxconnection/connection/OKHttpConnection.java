@@ -40,6 +40,8 @@ public class OKHttpConnection<T, E> extends Header {
     private String multipartFileName;
     @Setter
     private boolean logInfoRequestResponse;
+    @Setter
+    private CallBackForLog callBackForLog;
     @Getter
     private OkHttpClient okHttpClient = new OkHttpClient();
     @Getter
@@ -122,6 +124,9 @@ public class OKHttpConnection<T, E> extends Header {
         modelLog.setUrl(request.url().toString());
         modelLog.setHeader(request.headers().toString());
         modelLog.setError(response);
+        if (callBackForLog!=null){
+            callBackForLog.log(modelLog);
+        }
         if (logInfoRequestResponse) {
             try {
                 final String s = "Info\n" + "url : " + request.url() + "\nbody request : " + request.body().toString()

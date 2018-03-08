@@ -32,6 +32,13 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Ob
     private String multipartFileName;
     private boolean logInfoRequestResponse;
 
+    public HttpRequest<REQUEST, RESPONSE> setCallBackForLog(CallBackForLog callBackForLog) {
+        this.callBackForLog = callBackForLog;
+        return this;
+    }
+
+    private CallBackForLog callBackForLog;
+
     public HttpRequest<REQUEST, RESPONSE> setMessage(String message) {
         this.message = message;
         return this;
@@ -98,6 +105,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Ob
         teokHttpConnection.setCustomHeader(customHeader);
         teokHttpConnection.setMultipartFileName(multipartFileName);
         teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
+        teokHttpConnection.setCallBackForLog(callBackForLog);
         try {
             response =
                     teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
