@@ -20,6 +20,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import connection.rxconnection.model.BaseResponse;
+import connection.rxconnection.model.ModelLog;
 import lombok.Getter;
 import lombok.Setter;
 import okhttp3.MediaType;
@@ -41,6 +42,8 @@ public class OKHttpConnection<T, E> extends Header {
     private boolean logInfoRequestResponse;
     @Getter
     private OkHttpClient okHttpClient = new OkHttpClient();
+    @Getter
+    private ModelLog modelLog;
 
     public OKHttpConnection(HandleErrorConnection handleErrorConnection) {
         this.handleErrorConnection = handleErrorConnection;
@@ -91,12 +94,13 @@ public class OKHttpConnection<T, E> extends Header {
                         json = new GsonBuilder().setLenient().create().fromJson(log, eClass);
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();
-                        json = (E) log;
                     }
                     baseResponse = new BaseResponse();
                     baseResponse.setCode(response.code());
                     if (json != null) {
                         baseResponse.setData(json);
+                    }else {
+                        catchSuccessNull(response, log, null);
                     }
                     return baseResponse;
                 } else {
@@ -113,6 +117,11 @@ public class OKHttpConnection<T, E> extends Header {
     }
 
     private void printLog(Request request, String response) {
+        modelLog = new ModelLog();
+        modelLog.setBody(request.body().toString());
+        modelLog.setUrl(request.url().toString());
+        modelLog.setHeader(request.headers().toString());
+        modelLog.setError(response);
         if (logInfoRequestResponse) {
             try {
                 final String s = "Info\n" + "url : " + request.url() + "\nbody request : " + request.body().toString()
