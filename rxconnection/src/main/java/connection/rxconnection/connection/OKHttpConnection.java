@@ -88,7 +88,7 @@ public class OKHttpConnection<T, E> extends Header {
             response = okHttpClient.newCall(request).execute();
             String log = response.body().string();
             String code = String.valueOf(response.code());
-            printLog(request, log);
+            printLog(t,request, log);
             try {
                 if (code.startsWith("2")) {
                     E json = null;
@@ -118,10 +118,10 @@ public class OKHttpConnection<T, E> extends Header {
         }
     }
 
-    private void printLog(Request request, String response) {
+    private void printLog(T t, Request request, String response) {
         try {
             modelLog = new ModelLog();
-            modelLog.setBody(request.body().toString());
+            modelLog.setBody(new Gson().toJson(t));
             modelLog.setUrl(request.url().toString());
             modelLog.setHeader(request.headers().toString());
             modelLog.setError(response);
