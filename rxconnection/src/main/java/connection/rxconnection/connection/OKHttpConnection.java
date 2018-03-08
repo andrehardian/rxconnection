@@ -119,13 +119,17 @@ public class OKHttpConnection<T, E> extends Header {
     }
 
     private void printLog(Request request, String response) {
-        modelLog = new ModelLog();
-        modelLog.setBody(request.body().toString());
-        modelLog.setUrl(request.url().toString());
-        modelLog.setHeader(request.headers().toString());
-        modelLog.setError(response);
-        if (callBackForLog!=null){
-            callBackForLog.log(modelLog);
+        try {
+            modelLog = new ModelLog();
+            modelLog.setBody(request.body().toString());
+            modelLog.setUrl(request.url().toString());
+            modelLog.setHeader(request.headers().toString());
+            modelLog.setError(response);
+            if (callBackForLog!=null){
+                callBackForLog.log(modelLog);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         if (logInfoRequestResponse) {
             try {
