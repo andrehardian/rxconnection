@@ -9,7 +9,10 @@ import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.security.cert.CertificateException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -23,6 +26,7 @@ import connection.rxconnection.model.BaseResponse;
 import connection.rxconnection.model.ModelLog;
 import lombok.Getter;
 import lombok.Setter;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -160,9 +164,39 @@ public class OKHttpConnection<T, E> extends Header {
             File file = (File) t;
             return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(multipartFileName, file.getName(),
                     RequestBody.create(mediaType, file)).build();
-        } else {
+        }else if (mediaType.toString().contains("form")){
+            return bodyForm(t);
+        }
+        else {
             return RequestBody.create(mediaType, new Gson().toJson(t));
         }
+    }
+
+    private RequestBody bodyForm(T t) {
+        Map<String,Object> objectMap = pojo2Map(t);
+        FormBody.Builder formBody = new FormBody.Builder();
+        for (String key :objectMap.keySet()) {
+        formBody.add(key, String.valueOf(objectMap.get(key)));
+        }
+        return formBody.build();
+    }
+
+    public final static Map<String, Object> pojo2Map(Object obj) {
+        Map<String, Object> hashMap = new HashMap<String, Object>();
+        try {
+            Class<? extends Object> c = obj.getClass();
+            Method m[] = c.getMethods();
+            for (int i = 0; i < m.length; i++) {
+                if (m[i].getName().indexOf("get") == 0) {
+                    String name = m[i].getName().toLowerCase().substring(3, 4) + m[i].getName().substring(4);
+                    hashMap.put(name, m[i].invoke(obj, new Object[0])!=null?m[i].invoke(obj,
+                            new Object[0]):new Object());
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return hashMap;
     }
 
     private static OkHttpClient getUnsafeOkHttpClient() {
