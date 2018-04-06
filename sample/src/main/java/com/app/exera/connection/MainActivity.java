@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
     }
 
     @Override
-    public void onSuccessWithData(Object o, HttpRequest httpRequest) {
+    public void onSuccessWithData(Object o) {
+
     }
 
     @Override
