@@ -59,10 +59,6 @@ public class OKHttpConnection<T, E> extends Header {
     public BaseResponse data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
                              Context context) {
         okHttpClient = getUnsafeOkHttpClient();
-        OkHttpClient.Builder builder = okHttpClient.newBuilder();
-        builder.connectTimeout(1, TimeUnit.MINUTES);
-        builder.readTimeout(1, TimeUnit.MINUTES);
-        builder.writeTimeout(1, TimeUnit.MINUTES);
         return execute(t, url, eClass, httpMethod, mediaType, context);
     }
 
@@ -234,6 +230,9 @@ public class OKHttpConnection<T, E> extends Header {
                     return true;
                 }
             });
+            builder.connectTimeout(1, TimeUnit.MINUTES);
+            builder.readTimeout(1, TimeUnit.MINUTES);
+            builder.writeTimeout(1, TimeUnit.MINUTES);
 
             OkHttpClient okHttpClient = builder.build();
             return okHttpClient;
