@@ -88,7 +88,7 @@ public class OKHttpConnection<T, E> extends Header {
             response = okHttpClient.newCall(request).execute();
             String log = response.body().string();
             String code = String.valueOf(response.code());
-            printLog(t,request, log);
+            printLog(t, request, log, code);
             try {
                 if (code.startsWith("2")) {
                     E json = null;
@@ -101,7 +101,7 @@ public class OKHttpConnection<T, E> extends Header {
                     baseResponse.setCode(response.code());
                     if (json != null) {
                         baseResponse.setData(json);
-                    }else {
+                    } else {
                         catchSuccessNull(response, log, null);
                     }
                     return baseResponse;
@@ -118,14 +118,16 @@ public class OKHttpConnection<T, E> extends Header {
         }
     }
 
-    private void printLog(T t, Request request, String response) {
+    private void printLog(T t, Request request, String response, String httpCode) {
         try {
             modelLog = new ModelLog();
             modelLog.setBody(new Gson().toJson(t));
             modelLog.setUrl(request.url().toString());
             modelLog.setHeader(request.headers().toString());
             modelLog.setError(response);
-            if (callBackForLog!=null){
+            if (httpCode != null && httpCode.length() > 0)
+                modelLog.setHttpCode(Integer.parseInt(httpCode));
+            if (callBackForLog != null) {
                 callBackForLog.log(modelLog);
             }
         } catch (Exception e) {
@@ -160,19 +162,18 @@ public class OKHttpConnection<T, E> extends Header {
             File file = (File) t;
             return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(multipartFileName, file.getName(),
                     RequestBody.create(mediaType, file)).build();
-        }else if (mediaType.toString().contains("form")){
+        } else if (mediaType.toString().contains("form")) {
             return bodyForm(t);
-        }
-        else {
+        } else {
             return RequestBody.create(mediaType, new Gson().toJson(t));
         }
     }
 
     private RequestBody bodyForm(T t) {
-        Map<String,Object> objectMap = pojo2Map(t);
+        Map<String, Object> objectMap = pojo2Map(t);
         FormBody.Builder formBody = new FormBody.Builder();
-        for (String key :objectMap.keySet()) {
-        formBody.add(key, String.valueOf(objectMap.get(key)));
+        for (String key : objectMap.keySet()) {
+            formBody.add(key, String.valueOf(objectMap.get(key)));
         }
         return formBody.build();
     }
@@ -185,8 +186,8 @@ public class OKHttpConnection<T, E> extends Header {
             for (int i = 0; i < m.length; i++) {
                 if (m[i].getName().indexOf("get") == 0) {
                     String name = m[i].getName().toLowerCase().substring(3, 4) + m[i].getName().substring(4);
-                    hashMap.put(name, m[i].invoke(obj, new Object[0])!=null?m[i].invoke(obj,
-                            new Object[0]):new Object());
+                    hashMap.put(name, m[i].invoke(obj, new Object[0]) != null ? m[i].invoke(obj,
+                            new Object[0]) : new Object());
                 }
             }
         } catch (Throwable e) {

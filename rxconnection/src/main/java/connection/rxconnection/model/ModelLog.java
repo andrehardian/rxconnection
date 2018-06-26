@@ -14,4 +14,7 @@ public class ModelLog {
     private String url;
     private long exp;
     private String name;
+    private int httpCode;
+    private boolean saved;
+
 }
