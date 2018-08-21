@@ -33,6 +33,7 @@ public class ConnectionManager implements CallBackSubscriber {
         return this;
     }
 
+    @Getter
     private ConnectionListener connectionListener;
 
     private ProgressDialog progressDialog;
