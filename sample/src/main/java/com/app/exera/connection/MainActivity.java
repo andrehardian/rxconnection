@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
     }
 
     @Override
-    public void unAuthorized(HttpRequest httpRequest) {
+    public void unAuthorized(HttpRequest httpRequest,String messageError) {
 //error 401 auto logout unauthorized
     }
 }

@@ -9,5 +9,5 @@ public interface ConnectionListener {
     void onSuccessNull();
     void onMessageSuccess(String s);
     void onError(Object o, HttpRequest httpRequest);
-    void unAuthorized(HttpRequest httpRequest);
+    void unAuthorized(HttpRequest httpRequest,String messageError);
 }
