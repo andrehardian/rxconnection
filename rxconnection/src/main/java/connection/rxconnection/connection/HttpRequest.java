@@ -15,7 +15,7 @@ import rx.Subscriber;
  * Created by AndreHF on 4/12/2017.
  */
 
-public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Observable.OnSubscribe<BaseResponse<RESPONSE>> {
+public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observable.OnSubscribe<BaseResponse<RESPONSE>> {
     @Getter
     private REQUEST request;
     @Getter
@@ -106,21 +106,27 @@ public class HttpRequest<REQUEST, RESPONSE> implements HandleErrorConnection, Ob
         teokHttpConnection.setMultipartFileName(multipartFileName);
         teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
         teokHttpConnection.setCallBackForLog(callBackForLog);
-        try {
-            response =
-                    teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response = new BaseResponse<>();
-            response.setError(e.getMessage());
-        }
-        subscriber.onNext(response);
+        teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
     }
 
     @Override
     public void error(ExceptionHttpRequest exceptionHttpRequest) {
         exceptionHttpRequest.setHttpRequest(this);
         subscriber.onError(exceptionHttpRequest);
+    }
+
+    @Override
+    public <T> void success(T t) {
+        BaseResponse<RESPONSE> response = new BaseResponse<>();
+        try {
+            response = (BaseResponse<RESPONSE>) t;
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new BaseResponse<>();
+            response.setError(e.getMessage());
+        }
+
+        subscriber.onNext(response);
     }
 
     public OkHttpClient getOkhttpClient() {
