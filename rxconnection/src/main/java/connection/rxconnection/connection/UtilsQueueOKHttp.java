@@ -2,6 +2,7 @@ package connection.rxconnection.connection;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
@@ -20,8 +21,9 @@ public class UtilsQueueOKHttp<E> implements Callback {
     private final Class<E> eClass;
     private final CallBackOKHttp callBackOKHttp;
     private final CallBackForLog callBackForLog;
-
-    public UtilsQueueOKHttp(ModelLog modelLog, boolean logInfoRequestResponse, Class<E> eClass, CallBackOKHttp callBackOKHttp, CallBackForLog callBackForLog) {
+    private final Request request;
+    public UtilsQueueOKHttp(Request request, ModelLog modelLog, boolean logInfoRequestResponse, Class<E> eClass, CallBackOKHttp callBackOKHttp, CallBackForLog callBackForLog) {
+        this.request = request;
         this.modelLog = modelLog;
         this.logInfoRequestResponse = logInfoRequestResponse;
         this.eClass = eClass;
@@ -31,7 +33,7 @@ public class UtilsQueueOKHttp<E> implements Callback {
 
     @Override
     public void onFailure(Call call, IOException e) {
-        printLog(call.request(), e.getMessage(), "0");
+        printLog(e.getMessage(), "0");
     }
 
     @Override
@@ -40,7 +42,7 @@ public class UtilsQueueOKHttp<E> implements Callback {
             BaseResponse<E> baseResponse = null;
             String log = response.body().string();
             String code = String.valueOf(response.code());
-            printLog(call.request(), log, code);
+            printLog(log, code);
             try {
                 if (code.startsWith("2")) {
                     E json = null;
@@ -80,10 +82,10 @@ public class UtilsQueueOKHttp<E> implements Callback {
         }
     }
 
-    private void printLog(Request request, String response, String httpCode) {
+    private void printLog(String response, String httpCode) {
         try {
             modelLog = new ModelLog();
-            modelLog.setBody(request.body().toString());
+            modelLog.setBody(new Gson().toJson(request.body()));
             modelLog.setUrl(request.url().toString());
             modelLog.setHeader(request.headers().toString());
             modelLog.setError(response);
