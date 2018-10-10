@@ -18,6 +18,8 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import connection.rxconnection.model.BaseModelRequestFormData;
+import connection.rxconnection.model.ModelFormData;
 import connection.rxconnection.model.ModelLog;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +37,7 @@ import okhttp3.RequestBody;
 public class OKHttpConnection<T, E> extends Header {
     private final CallBackOKHttp callBackOKHttp;
     @Setter
-    private String multipartFileName;
+    private boolean formData;
     @Setter
     private boolean logInfoRequestResponse;
     @Setter
@@ -82,16 +84,32 @@ public class OKHttpConnection<T, E> extends Header {
     }
 
     private RequestBody createBody(MediaType mediaType, T t) {
-        if (t instanceof File) {
-            File file = (File) t;
-            return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(multipartFileName, file.getName(),
-                    RequestBody.create(mediaType, file)).build();
+        if (formData) {
+            MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
+            if (t instanceof BaseModelRequestFormData) {
+                BaseModelRequestFormData baseModelRequestFormData = (BaseModelRequestFormData) t;
+                multipartBodyBuilder.setType(MultipartBody.FORM);
+                if (baseModelRequestFormData.getModelFormData() != null) {
+                    for (ModelFormData modelFormData : baseModelRequestFormData.getModelFormData()) {
+                        if (modelFormData.getValue() instanceof File) {
+                            multipartBodyBuilder.addFormDataPart(((File) modelFormData.getValue())
+                                            .getName(), modelFormData.getKey(),
+                                    RequestBody.create(mediaType, (File) modelFormData.getValue()));
+                        } else {
+                            multipartBodyBuilder.addFormDataPart(modelFormData.getKey(),
+                                    (String) modelFormData.getValue());
+                        }
+                    }
+                }
+            }
+            return multipartBodyBuilder.build();
         } else if (mediaType.toString().contains("form")) {
             return bodyForm(t);
         } else {
             return RequestBody.create(mediaType, new Gson().toJson(t));
         }
     }
+
 
     private RequestBody bodyForm(T t) {
         Map<String, Object> objectMap = pojo2Map(t);

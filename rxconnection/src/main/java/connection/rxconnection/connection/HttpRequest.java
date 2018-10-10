@@ -29,7 +29,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     private String userType;
     private Subscriber<? super BaseResponse<RESPONSE>> subscriber;
     private Map<String, String> customHeader;
-    private String multipartFileName;
+    private boolean formData;
     private boolean logInfoRequestResponse;
 
     public HttpRequest<REQUEST, RESPONSE> setCallBackForLog(CallBackForLog callBackForLog) {
@@ -92,8 +92,8 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         return this;
     }
 
-    public HttpRequest<REQUEST, RESPONSE> setMultipartFileName(String multipartFileName) {
-        this.multipartFileName = multipartFileName;
+    public HttpRequest<REQUEST, RESPONSE> setFormData(boolean formData) {
+        this.formData = formData;
         return this;
     }
 
@@ -103,10 +103,12 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         this.subscriber = subscriber;
         BaseResponse<RESPONSE> response = null;
         teokHttpConnection.setCustomHeader(customHeader);
-        teokHttpConnection.setMultipartFileName(multipartFileName);
+        teokHttpConnection.setFormData(formData);
         teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
         teokHttpConnection.setCallBackForLog(callBackForLog);
-        teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
+        teokHttpConnection.data(request, url, eClass, httpMethod, formData ?
+                MediaType.parse(org.androidannotations.api.rest.MediaType.MULTIPART_FORM_DATA ):
+                mediaType, context);
     }
 
     @Override
