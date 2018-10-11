@@ -92,8 +92,8 @@ public class OKHttpConnection<T, E> extends Header {
                 if (baseModelRequestFormData.getModelFormData() != null) {
                     for (ModelFormData modelFormData : baseModelRequestFormData.getModelFormData()) {
                         if (modelFormData.getValue() instanceof File) {
-                            multipartBodyBuilder.addFormDataPart(((File) modelFormData.getValue())
-                                            .getName(), modelFormData.getKey(),
+                            multipartBodyBuilder.addFormDataPart(modelFormData.getKey(), ((File) modelFormData.getValue())
+                                            .getName(),
                                     RequestBody.create(mediaType, (File) modelFormData.getValue()));
                         } else {
                             multipartBodyBuilder.addFormDataPart(modelFormData.getKey(),
