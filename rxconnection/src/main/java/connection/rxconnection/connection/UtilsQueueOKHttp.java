@@ -15,25 +15,27 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class UtilsQueueOKHttp<E> implements Callback {
+public class UtilsQueueOKHttp<T, E> implements Callback {
     private ModelLog modelLog;
     private boolean logInfoRequestResponse;
     private final Class<E> eClass;
     private final CallBackOKHttp callBackOKHttp;
     private final CallBackForLog callBackForLog;
-    private final Request request;
-    public UtilsQueueOKHttp(Request request, ModelLog modelLog, boolean logInfoRequestResponse, Class<E> eClass, CallBackOKHttp callBackOKHttp, CallBackForLog callBackForLog) {
-        this.request = request;
+    private final T requestData;
+
+    public UtilsQueueOKHttp(ModelLog modelLog, boolean logInfoRequestResponse, Class<E> eClass,
+                            CallBackOKHttp callBackOKHttp, CallBackForLog callBackForLog, T request) {
         this.modelLog = modelLog;
         this.logInfoRequestResponse = logInfoRequestResponse;
         this.eClass = eClass;
         this.callBackOKHttp = callBackOKHttp;
         this.callBackForLog = callBackForLog;
+        this.requestData = request;
     }
 
     @Override
     public void onFailure(Call call, IOException e) {
-        printLog(e.getMessage(), "0");
+        printLog(call.request(), e.getMessage(), "0");
     }
 
     @Override
@@ -42,7 +44,7 @@ public class UtilsQueueOKHttp<E> implements Callback {
             BaseResponse<E> baseResponse = null;
             String log = response.body().string();
             String code = String.valueOf(response.code());
-            printLog(log, code);
+            printLog(call.request(), log, code);
             try {
                 if (code.startsWith("2")) {
                     E json = null;
@@ -82,10 +84,10 @@ public class UtilsQueueOKHttp<E> implements Callback {
         }
     }
 
-    private void printLog(String response, String httpCode) {
+    private void printLog(Request request, String response, String httpCode) {
         try {
             modelLog = new ModelLog();
-            modelLog.setBody(new Gson().toJson(request.body()));
+            modelLog.setBody(new Gson().toJson(requestData));
             modelLog.setUrl(request.url().toString());
             modelLog.setHeader(request.headers().toString());
             modelLog.setError(response);
@@ -99,8 +101,8 @@ public class UtilsQueueOKHttp<E> implements Callback {
         }
         if (logInfoRequestResponse) {
             try {
-                final String s = "Info\n" + "url : " + request.url() + "\nbody request : " + request.body().toString()
-                        + "\nrequest header : " + request.headers() +
+                final String s = "Info\n" + "url : " + request.url() + "\nbody requestData : " + request.body().toString()
+                        + "\nrequestData header : " + request.headers() +
                         "\nresponse body : " + response;
                 Log.i("rxconnection_log", s);
             } catch (Exception e) {

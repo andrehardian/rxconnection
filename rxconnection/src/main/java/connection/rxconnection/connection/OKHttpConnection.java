@@ -78,8 +78,8 @@ public class OKHttpConnection<T, E> extends Header {
                 request = new Request.Builder().headers(headers(context)).delete().url(url).build();
                 break;
         }
-        okHttpClient.newCall(request).enqueue(new UtilsQueueOKHttp(request, modelLog,
-                logInfoRequestResponse, eClass, callBackOKHttp, callBackForLog));
+        okHttpClient.newCall(request).enqueue(new UtilsQueueOKHttp(modelLog,
+                logInfoRequestResponse, eClass, callBackOKHttp, callBackForLog, t));
 
     }
 
