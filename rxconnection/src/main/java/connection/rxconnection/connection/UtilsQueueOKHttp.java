@@ -36,6 +36,7 @@ public class UtilsQueueOKHttp<T, E> implements Callback {
     @Override
     public void onFailure(Call call, IOException e) {
         printLog(call.request(), e.getMessage(), "0");
+        catchSuccessNull(null, e.getMessage(), null);
     }
 
     @Override
