@@ -68,8 +68,7 @@ public class OKHttpConnection<T, E> extends Header {
                 request = new Request.Builder().headers(headers(context)).post(requestBody).url(url).build();
                 break;
             case HttpMethod.GET:
-                requestBody = createBody(mediaType, t);
-                request = new Request.Builder().headers(headers(context)).put(requestBody).url(url).build();
+                request = new Request.Builder().headers(headers(context)).url(url).get().build();
                 break;
             case HttpMethod.PUT:
                 requestBody = createBody(mediaType, t);
@@ -77,7 +76,7 @@ public class OKHttpConnection<T, E> extends Header {
                 break;
             case HttpMethod.DELETE:
                 requestBody = createBody(mediaType, t);
-                request = new Request.Builder().headers(headers(context)).put(requestBody).delete().url(url).build();
+                request = new Request.Builder().headers(headers(context)).delete(requestBody).url(url).build();
                 break;
         }
         okHttpClient.newCall(request).enqueue(new UtilsQueueOKHttp(modelLog,
