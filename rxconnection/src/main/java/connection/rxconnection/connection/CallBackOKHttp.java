@@ -7,4 +7,5 @@ package connection.rxconnection.connection;
 public interface CallBackOKHttp {
     void error(ExceptionHttpRequest exceptionHttpRequest);
     <T> void success(T t);
+    void doneDownload();
 }

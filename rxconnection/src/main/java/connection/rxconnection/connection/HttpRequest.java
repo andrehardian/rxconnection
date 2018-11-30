@@ -148,6 +148,11 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         subscriber.onNext(response);
     }
 
+    @Override
+    public void doneDownload() {
+        subscriber.onCompleted();
+    }
+
     public OkHttpClient getOkhttpClient() {
         return teokHttpConnection.getOkHttpClient();
     }

@@ -82,10 +82,21 @@ public class OKHttpConnection<T, E> extends Header {
                     outputStream.write(dataFile, 0, count);
                     progressDownloadListener.progress(total);
                 }
+
+                if (outputStream != null) {
+                    outputStream.flush();
+                    outputStream.close();
+                }
+
+                if (bufferedInputStream != null) {
+                    bufferedInputStream.close();
+                }
+
+                callBackOKHttp.doneDownload();
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                callBackOKHttp.error(new ExceptionHttpRequest(e.getMessage(), response, e));
             } catch (IOException e) {
-                e.printStackTrace();
+                callBackOKHttp.error(new ExceptionHttpRequest(e.getMessage(), response, e));
             }
         }
     }
