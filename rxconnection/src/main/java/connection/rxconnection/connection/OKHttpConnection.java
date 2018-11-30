@@ -194,6 +194,26 @@ public class OKHttpConnection<T, E> extends Header {
 
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
+/*
+            // Create a trust manager that does not validate certificate chains
+            final TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
+                                                       String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    }
+            };
+*/
 
             ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS)
                     .supportsTlsExtensions(true)
@@ -213,8 +233,29 @@ public class OKHttpConnection<T, E> extends Header {
                             CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA)
                     .build();
 
+/*
+            // Install the all-trusting trust manager
+            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            // Create an ssl socket factory with our all-trusting manager
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+*/
+
+            SSLContext sslContext;
+            sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, null, null);
+            sslContext.createSSLEngine();
+
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.connectionSpecs(Collections.singletonList(spec));
+//            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+            builder.sslSocketFactory(sslContext.getSocketFactory());
+            builder.hostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            });
             builder.connectTimeout(1, TimeUnit.MINUTES);
             builder.readTimeout(1, TimeUnit.MINUTES);
             builder.writeTimeout(1, TimeUnit.MINUTES);
