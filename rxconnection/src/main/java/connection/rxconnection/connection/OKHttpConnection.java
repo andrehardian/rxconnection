@@ -4,7 +4,13 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
@@ -29,6 +35,7 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by AndreHF on 1/27/2017.
@@ -51,6 +58,37 @@ public class OKHttpConnection<T, E> extends Header {
         this.callBackOKHttp = handleErrorConnection;
     }
 
+    public void download(String url, File fileDownload, ProgressDownloadListener progressDownloadListener) {
+        okHttpClient = getUnsafeOkHttpClient();
+        Request request = new Request.Builder().url(url).build();
+        Response response = null;
+        try {
+            response = okHttpClient.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (response != null) {
+            InputStream inputStream = response.body().byteStream();
+
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+            try {
+                OutputStream outputStream = new FileOutputStream(fileDownload);
+                long total = 0;
+                byte[] dataFile = new byte[1024];
+                int count = 0;
+                while ((count = bufferedInputStream.read(dataFile)) != -1) {
+                    total += count;
+                    outputStream.write(dataFile, 0, count);
+                    progressDownloadListener.progress(total);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
                      Context context) {

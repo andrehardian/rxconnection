@@ -2,6 +2,7 @@ package connection.rxconnection.connection;
 
 import android.content.Context;
 
+import java.io.File;
 import java.util.Map;
 
 import connection.rxconnection.model.BaseResponse;
@@ -23,14 +24,17 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     @Getter
     private final Context context;
     private MediaType mediaType;
-    private final Class<RESPONSE> eClass;
+    private Class<RESPONSE> eClass;
     private final String url;
-    private final int httpMethod;
+    private int httpMethod;
     private String userType;
     private Subscriber<? super BaseResponse<RESPONSE>> subscriber;
     private Map<String, String> customHeader;
     private boolean formData;
     private boolean logInfoRequestResponse;
+    private boolean downloadFile;
+    private File fileDownload;
+    private ProgressDownloadListener progressDownloadListener;
 
     public HttpRequest<REQUEST, RESPONSE> setCallBackForLog(CallBackForLog callBackForLog) {
         this.callBackForLog = callBackForLog;
@@ -64,6 +68,16 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         teokHttpConnection = new OKHttpConnection(this);
         this.mediaType = MediaType.parse(org.androidannotations.api.rest.MediaType.APPLICATION_JSON
                 + "; charset=utf-8");
+    }
+
+    public HttpRequest(Context context, String url, File fileDownload, ProgressDownloadListener progressDownloadListener) {
+//        super(f);
+        this.progressDownloadListener = progressDownloadListener;
+        this.fileDownload = fileDownload;
+        downloadFile = true;
+        this.context = context;
+        this.url = url;
+        teokHttpConnection = new OKHttpConnection(this);
     }
 
     public HttpRequest(Context context, Class<RESPONSE> resultClass, String url, int httpMethod) {
@@ -101,14 +115,17 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     @Override
     public void call(Subscriber<? super BaseResponse<RESPONSE>> subscriber) {
         this.subscriber = subscriber;
-        BaseResponse<RESPONSE> response = null;
-        teokHttpConnection.setCustomHeader(customHeader);
-        teokHttpConnection.setFormData(formData);
-        teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
-        teokHttpConnection.setCallBackForLog(callBackForLog);
-        teokHttpConnection.data(request, url, eClass, httpMethod, formData ?
-                MediaType.parse(org.androidannotations.api.rest.MediaType.MULTIPART_FORM_DATA ):
-                mediaType, context);
+        if (downloadFile) {
+            teokHttpConnection.download(url, fileDownload, progressDownloadListener);
+        } else {
+            teokHttpConnection.setCustomHeader(customHeader);
+            teokHttpConnection.setFormData(formData);
+            teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
+            teokHttpConnection.setCallBackForLog(callBackForLog);
+            teokHttpConnection.data(request, url, eClass, httpMethod, formData ?
+                    MediaType.parse(org.androidannotations.api.rest.MediaType.MULTIPART_FORM_DATA) :
+                    mediaType, context);
+        }
     }
 
     @Override
