@@ -73,34 +73,43 @@ public class OKHttpConnection<T, E> extends Header {
         }
 
         if (response != null) {
-            InputStream inputStream = response.body().byteStream();
+            String code = String.valueOf(response.code());
+            if (code.startsWith("2")) {
+                InputStream inputStream = response.body().byteStream();
 
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            try {
-                OutputStream outputStream = new FileOutputStream(fileDownload);
-                long total = 0;
-                byte[] dataFile = new byte[1024];
-                int count = 0;
-                while ((count = bufferedInputStream.read(dataFile)) != -1) {
-                    total += count;
-                    outputStream.write(dataFile, 0, count);
-                    progressDownloadListener.progress(total);
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+                try {
+                    OutputStream outputStream = new FileOutputStream(fileDownload);
+                    long total = 0;
+                    byte[] dataFile = new byte[1024];
+                    int count = 0;
+                    while ((count = bufferedInputStream.read(dataFile)) != -1) {
+                        total += count;
+                        outputStream.write(dataFile, 0, count);
+                        progressDownloadListener.progress(total);
+                    }
+
+                    if (outputStream != null) {
+                        outputStream.flush();
+                        outputStream.close();
+                    }
+
+                    if (bufferedInputStream != null) {
+                        bufferedInputStream.close();
+                    }
+
+                    callBackOKHttp.doneDownload();
+                } catch (FileNotFoundException e) {
+                    callBackOKHttp.error(new ExceptionHttpRequest(e.getMessage(), response, e));
+                } catch (IOException e) {
+                    callBackOKHttp.error(new ExceptionHttpRequest(e.getMessage(), response, e));
                 }
-
-                if (outputStream != null) {
-                    outputStream.flush();
-                    outputStream.close();
+            }else {
+                try {
+                    progressDownloadListener.error(response.body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                if (bufferedInputStream != null) {
-                    bufferedInputStream.close();
-                }
-
-                callBackOKHttp.doneDownload();
-            } catch (FileNotFoundException e) {
-                callBackOKHttp.error(new ExceptionHttpRequest(e.getMessage(), response, e));
-            } catch (IOException e) {
-                callBackOKHttp.error(new ExceptionHttpRequest(e.getMessage(), response, e));
             }
         }
     }
