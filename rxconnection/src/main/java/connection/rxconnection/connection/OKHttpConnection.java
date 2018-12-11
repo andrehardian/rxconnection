@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +20,6 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import connection.rxconnection.model.BaseModelRequestFormData;
 import connection.rxconnection.model.ModelFormData;
@@ -63,7 +59,7 @@ public class OKHttpConnection<T, E> extends Header {
     }
 
     public void download(String url, File fileDownload, ProgressDownloadListener
-            progressDownloadListener,Context context) {
+            progressDownloadListener, Context context) {
         okHttpClient = getUnsafeOkHttpClient();
         Request request = new Request.Builder().headers(this.headers(context)).url(url).build();
         Response response = null;
@@ -87,7 +83,7 @@ public class OKHttpConnection<T, E> extends Header {
                     while ((count = bufferedInputStream.read(dataFile)) != -1) {
                         total += count;
                         outputStream.write(dataFile, 0, count);
-                        progressDownloadListener.progress(total/count*100);
+                        progressDownloadListener.progress(total / response.body().contentLength() * 100);
                     }
 
                     if (outputStream != null) {
@@ -105,7 +101,7 @@ public class OKHttpConnection<T, E> extends Header {
                 } catch (IOException e) {
                     callBackOKHttp.error(new ExceptionHttpRequest(e.getMessage(), response, e));
                 }
-            }else {
+            } else {
                 try {
                     progressDownloadListener.error(response.body().string());
                 } catch (IOException e) {
