@@ -62,9 +62,10 @@ public class OKHttpConnection<T, E> extends Header {
         this.callBackOKHttp = handleErrorConnection;
     }
 
-    public void download(String url, File fileDownload, ProgressDownloadListener progressDownloadListener) {
+    public void download(String url, File fileDownload, ProgressDownloadListener
+            progressDownloadListener,Context context) {
         okHttpClient = getUnsafeOkHttpClient();
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder().headers(this.headers(context)).url(url).build();
         Response response = null;
         try {
             response = okHttpClient.newCall(request).execute();
