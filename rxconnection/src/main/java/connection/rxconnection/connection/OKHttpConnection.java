@@ -87,7 +87,7 @@ public class OKHttpConnection<T, E> extends Header {
                     while ((count = bufferedInputStream.read(dataFile)) != -1) {
                         total += count;
                         outputStream.write(dataFile, 0, count);
-                        progressDownloadListener.progress(total);
+                        progressDownloadListener.progress(total/count*100);
                     }
 
                     if (outputStream != null) {
