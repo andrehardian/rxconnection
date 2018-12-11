@@ -115,10 +115,10 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     @Override
     public void call(Subscriber<? super BaseResponse<RESPONSE>> subscriber) {
         this.subscriber = subscriber;
+        teokHttpConnection.setCustomHeader(customHeader);
         if (downloadFile) {
-            teokHttpConnection.download(url, fileDownload, progressDownloadListener);
+            teokHttpConnection.download(url, fileDownload, progressDownloadListener, context);
         } else {
-            teokHttpConnection.setCustomHeader(customHeader);
             teokHttpConnection.setFormData(formData);
             teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
             teokHttpConnection.setCallBackForLog(callBackForLog);
