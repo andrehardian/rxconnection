@@ -15,8 +15,9 @@ import rx.schedulers.Schedulers;
 public class ConnectionManager implements CallBackSubscriber {
     @Getter
     private Context context;
+    @Getter
     private boolean show = true;
-    private int requestSize = 0;
+    protected int requestSize = 0;
 
     public ConnectionManager setContext(Context context) {
         this.context = context;
