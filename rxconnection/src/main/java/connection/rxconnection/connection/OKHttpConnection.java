@@ -53,6 +53,7 @@ public class OKHttpConnection<T, E> extends Header {
     private OkHttpClient okHttpClient = new OkHttpClient();
     @Getter
     private ModelLog modelLog;
+    private UtilsQueueOKHttp utilsQueueOKHttp;
 
     public OKHttpConnection(CallBackOKHttp handleErrorConnection) {
         this.callBackOKHttp = handleErrorConnection;
@@ -103,13 +104,14 @@ public class OKHttpConnection<T, E> extends Header {
                 }
             } else {
                 try {
-                    progressDownloadListener.error(response.body().string());
+                    progressDownloadListener.error(utilsQueueOKHttp.getBodyString(response));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
+
 
     public void data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
                      Context context) {
@@ -138,8 +140,9 @@ public class OKHttpConnection<T, E> extends Header {
                 request = new Request.Builder().headers(headers(context)).delete(requestBody).url(url).build();
                 break;
         }
-        okHttpClient.newCall(request).enqueue(new UtilsQueueOKHttp(modelLog,
-                logInfoRequestResponse, eClass, callBackOKHttp, callBackForLog, t));
+        utilsQueueOKHttp = new UtilsQueueOKHttp(modelLog,
+                logInfoRequestResponse, eClass, callBackOKHttp, callBackForLog, t);
+        okHttpClient.newCall(request).enqueue(utilsQueueOKHttp);
 
     }
 

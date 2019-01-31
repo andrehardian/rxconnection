@@ -43,7 +43,7 @@ public class UtilsQueueOKHttp<T, E> implements Callback {
     public void onResponse(Call call, Response response) throws IOException {
         try {
             BaseResponse<E> baseResponse = null;
-            String log = response.body().string();
+            String log = getBodyString(response);
             String code = String.valueOf(response.code());
             printLog(call.request(), log, code);
             try {
@@ -113,6 +113,16 @@ public class UtilsQueueOKHttp<T, E> implements Callback {
         }
 
     }
+
+    public String getBodyString(Response response) throws IOException {
+        String error = "";
+        int value = 0;
+        while ((value = response.body().charStream().read()) != -1) {
+            error += (char) value;
+        }
+        return error;
+    }
+
 
 
 }
