@@ -41,38 +41,33 @@ public class UtilsQueueOKHttp<T, E> implements Callback {
     }
 
     @Override
-    public void onResponse(Call call, Response response) throws IOException {
+    public void onResponse(Call call, Response response) {
+        BaseResponse<E> baseResponse = null;
+        String log = getBodyString(response);
+        String code = String.valueOf(response.code());
+        printLog(call.request(), log, code);
         try {
-            BaseResponse<E> baseResponse = null;
-            String log = getBodyString(response);
-            String code = String.valueOf(response.code());
-            printLog(call.request(), log, code);
-            try {
-                if (code.startsWith("2")) {
-                    E json = null;
-                    try {
-                        json = new GsonBuilder().setLenient().create().fromJson(log, eClass);
-                    } catch (JsonSyntaxException e) {
-                        e.printStackTrace();
-                    }
-                    baseResponse = new BaseResponse();
-                    baseResponse.setCode(response.code());
-                    if (json != null) {
-                        baseResponse.setData(json);
-                        callBackOKHttp.success(baseResponse);
-                    } else {
-                        catchSuccessNull(response, log, null);
-                    }
+            if (code.startsWith("2")) {
+                E json = null;
+                try {
+                    json = new GsonBuilder().setLenient().create().fromJson(log, eClass);
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+                baseResponse = new BaseResponse();
+                baseResponse.setCode(response.code());
+                if (json != null) {
+                    baseResponse.setData(json);
+                    callBackOKHttp.success(baseResponse);
                 } else {
                     catchSuccessNull(response, log, null);
                 }
-            } catch (ExceptionHttpRequest e) {
-                e.printStackTrace();
-                catchSuccessNull(response, log, e);
+            } else {
+                catchSuccessNull(response, log, null);
             }
-
-        } catch (IOException e) {
-            catchSuccessNull(response, e.getMessage(), e);
+        } catch (ExceptionHttpRequest e) {
+            e.printStackTrace();
+            catchSuccessNull(response, log, e);
         }
 
     }
