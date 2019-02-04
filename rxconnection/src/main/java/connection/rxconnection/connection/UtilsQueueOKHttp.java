@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
+import java.io.Reader;
 
 import connection.rxconnection.model.BaseResponse;
 import connection.rxconnection.model.ModelLog;
@@ -114,15 +115,28 @@ public class UtilsQueueOKHttp<T, E> implements Callback {
 
     }
 
-    public String getBodyString(Response response) throws IOException {
+    public String getBodyString(Response response) {
         String error = "";
         int value = 0;
-        while ((value = response.body().charStream().read()) != -1) {
-            error += (char) value;
+        Reader reader = null;
+        try {
+            reader = response.body().charStream();
+            while ((value = reader.read()) != -1) {
+                error += (char) value;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return error;
     }
-
 
 
 }
