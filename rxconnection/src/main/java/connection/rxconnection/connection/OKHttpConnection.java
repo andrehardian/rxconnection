@@ -103,11 +103,7 @@ public class OKHttpConnection<T, E> extends Header {
                     callBackOKHttp.error(new ExceptionHttpRequest(e.getMessage(), response, e));
                 }
             } else {
-                try {
-                    progressDownloadListener.error(utilsQueueOKHttp.getBodyString(response));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                progressDownloadListener.error(utilsQueueOKHttp.getBodyString(response));
             }
         }
     }
