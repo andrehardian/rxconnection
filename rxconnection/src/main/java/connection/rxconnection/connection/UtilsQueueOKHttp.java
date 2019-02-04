@@ -112,23 +112,30 @@ public class UtilsQueueOKHttp<T, E> implements Callback {
 
     public String getBodyString(Response response) {
         String error = "";
-        int value = 0;
-        Reader reader = null;
+
         try {
-            reader = response.body().charStream();
-            while ((value = reader.read()) != -1) {
-                error += (char) value;
-            }
-        } catch (IOException e) {
+            error = response.body().string();
+        } catch (IOException|OutOfMemoryError e) {
             e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            int value = 0;
+            Reader reader = null;
+            try {
+                reader = response.body().charStream();
+                while ((value = reader.read()) != -1) {
+                    error += (char) value;
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
+
         }
         return error;
     }
