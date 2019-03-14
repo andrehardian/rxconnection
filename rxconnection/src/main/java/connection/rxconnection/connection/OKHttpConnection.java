@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -252,7 +253,10 @@ public class OKHttpConnection<T, E> extends Header {
             sslContext.createSSLEngine();
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.connectionSpecs(Collections.singletonList(spec));
+            List listSpec = Collections.singletonList(spec);
+            listSpec.add(ConnectionSpec.MODERN_TLS);
+            listSpec.add(ConnectionSpec.COMPATIBLE_TLS);
+            builder.connectionSpecs(listSpec);
 //            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
             builder.sslSocketFactory(sslContext.getSocketFactory());
             builder.hostnameVerifier(new HostnameVerifier() {
