@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -253,7 +254,8 @@ public class OKHttpConnection<T, E> extends Header {
             sslContext.createSSLEngine();
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            List listSpec = Collections.singletonList(spec);
+            List<ConnectionSpec> listSpec = new ArrayList()/*Collections.singletonList(spec)*/;
+            listSpec.add(spec);
             listSpec.add(ConnectionSpec.MODERN_TLS);
             listSpec.add(ConnectionSpec.COMPATIBLE_TLS);
             builder.connectionSpecs(listSpec);
