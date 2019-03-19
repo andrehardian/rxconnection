@@ -34,6 +34,26 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     private boolean logInfoRequestResponse;
     private boolean downloadFile;
     private File fileDownload;
+    private int connectionTimeout = 1;
+    private int readTimeout = 1;
+    private int writeTimeout = 1;
+
+
+    public HttpRequest<REQUEST, RESPONSE> setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setWriteTimeout(int writeTimeout) {
+        this.writeTimeout = writeTimeout;
+        return this;
+    }
+
+
+    public HttpRequest<REQUEST, RESPONSE> setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+        return this;
+    }
     private ProgressDownloadListener progressDownloadListener;
 
     public HttpRequest<REQUEST, RESPONSE> setCallBackForLog(CallBackForLog callBackForLog) {
@@ -119,6 +139,9 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         if (downloadFile) {
             teokHttpConnection.download(url, fileDownload, progressDownloadListener, context);
         } else {
+            teokHttpConnection.setConnectionTimeOut(connectionTimeout);
+            teokHttpConnection.setReadTimeOut(readTimeout);
+            teokHttpConnection.setWriteTimeOut(writeTimeout);
             teokHttpConnection.setFormData(formData);
             teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
             teokHttpConnection.setCallBackForLog(callBackForLog);

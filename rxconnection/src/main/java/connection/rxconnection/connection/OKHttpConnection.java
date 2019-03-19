@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +46,12 @@ public class OKHttpConnection<T, E> extends Header {
     private final CallBackOKHttp callBackOKHttp;
     @Setter
     private boolean formData;
+    @Setter
+    private int connectionTimeOut;
+    @Setter
+    private int readTimeOut;
+    @Setter
+    private int writeTimeOut;
     @Setter
     private boolean logInfoRequestResponse;
     @Setter
@@ -199,7 +204,7 @@ public class OKHttpConnection<T, E> extends Header {
         return hashMap;
     }
 
-    private static OkHttpClient getUnsafeOkHttpClient() {
+    private OkHttpClient getUnsafeOkHttpClient() {
         try {
 /*
             // Create a trust manager that does not validate certificate chains
@@ -267,9 +272,9 @@ public class OKHttpConnection<T, E> extends Header {
                     return true;
                 }
             });
-            builder.connectTimeout(1, TimeUnit.MINUTES);
-            builder.readTimeout(1, TimeUnit.MINUTES);
-            builder.writeTimeout(1, TimeUnit.MINUTES);
+            builder.connectTimeout(connectionTimeOut, TimeUnit.MINUTES);
+            builder.readTimeout(readTimeOut, TimeUnit.MINUTES);
+            builder.writeTimeout(writeTimeOut, TimeUnit.MINUTES);
 
             OkHttpClient okHttpClient = builder.build();
             return okHttpClient;
