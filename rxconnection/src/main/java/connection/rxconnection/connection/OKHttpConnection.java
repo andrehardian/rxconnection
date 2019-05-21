@@ -227,7 +227,7 @@ public class OKHttpConnection<T, E> extends Header {
             };
 */
 
-            ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS)
+            ConnectionSpec specCompatible = new ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS)
                     .supportsTlsExtensions(true)
                     .tlsVersions(TlsVersion.TLS_1_2, TlsVersion.TLS_1_1, TlsVersion.TLS_1_0)
                     .cipherSuites(
@@ -245,6 +245,14 @@ public class OKHttpConnection<T, E> extends Header {
                             CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA)
                     .build();
 
+            ConnectionSpec specModern = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                    .tlsVersions(TlsVersion.TLS_1_2)
+                    .cipherSuites(
+                            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+                            CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256)
+                    .build();
+
 /*
             // Install the all-trusting trust manager
             final SSLContext sslContext = SSLContext.getInstance("SSL");
@@ -260,9 +268,9 @@ public class OKHttpConnection<T, E> extends Header {
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             List<ConnectionSpec> listSpec = new ArrayList()/*Collections.singletonList(spec)*/;
-            listSpec.add(spec);
-            listSpec.add(ConnectionSpec.MODERN_TLS);
-            listSpec.add(ConnectionSpec.COMPATIBLE_TLS);
+            listSpec.add(specCompatible);
+            listSpec.add(specModern);
+            listSpec.add(ConnectionSpec.CLEARTEXT);
             builder.connectionSpecs(listSpec);
 //            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
             builder.sslSocketFactory(sslContext.getSocketFactory());
