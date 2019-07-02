@@ -15,7 +15,7 @@ Add dependencies :
 
 ```
 dependencies {
-     compile 'com.github.andrehardian:rxconnection:2.1.16'
+     compile 'com.github.andrehardian:rxconnection:2.2.19'
 }
 
 ```
