@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Connection.iml" filepath="$PROJECT_DIR$/Connection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/exera library-rxconnection.iml" filepath="$PROJECT_DIR$/exera library-rxconnection.iml" group="rxconnection" />
       <module fileurl="file://$PROJECT_DIR$/rxconnection/rxconnection.iml" filepath="$PROJECT_DIR$/rxconnection/rxconnection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rxconnection/rxconnection-rxconnection.iml" filepath="$PROJECT_DIR$/rxconnection/rxconnection-rxconnection.iml" group="rxconnection/rxconnection" />
+      <module fileurl="file://$PROJECT_DIR$/sample/rxconnection-sample.iml" filepath="$PROJECT_DIR$/sample/rxconnection-sample.iml" group="rxconnection/sample" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
     </modules>
   </component>
