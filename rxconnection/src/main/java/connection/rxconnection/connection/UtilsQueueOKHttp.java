@@ -126,14 +126,6 @@ public class UtilsQueueOKHttp<T, E> implements Callback {
                 }
             } catch (IOException e1) {
                 e1.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException|IllegalStateException e1) {
-                        e1.printStackTrace();
-                    }
-                }
             }
 
         }
