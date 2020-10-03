@@ -76,9 +76,14 @@ public class OKHttpConnection<T, E> extends Header {
             for (int i = 0; i < m.length; i++) {
                 if (m[i].getName().indexOf("get") == 0) {
                     String name = m[i].getName().toLowerCase().substring(3, 4) + m[i].getName().substring(4);
-                    Field fields = Field.class.getDeclaredField(name);
-                    SerializedName sName = fields.getAnnotation(SerializedName.class);
-                    hashMap.put(sName.value(), m[i].invoke(obj, new Object[0]) != null ? m[i].invoke(obj,
+                    SerializedName sName = null;
+                    try {
+                        Field fields = Field.class.getDeclaredField(name);
+                        sName = fields.getAnnotation(SerializedName.class);
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
+                    }
+                    hashMap.put(sName != null ? sName.value() : name, m[i].invoke(obj, new Object[0]) != null ? m[i].invoke(obj,
                             new Object[0]) : new Object());
                 }
             }
