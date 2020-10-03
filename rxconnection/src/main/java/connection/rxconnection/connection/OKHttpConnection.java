@@ -3,6 +3,7 @@ package connection.rxconnection.connection;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +68,26 @@ public class OKHttpConnection<T, E> extends Header {
         this.callBackOKHttp = handleErrorConnection;
     }
 
+    public final static Map<String, Object> pojo2Map(Object obj) {
+        Map<String, Object> hashMap = new HashMap<String, Object>();
+        try {
+            Class<? extends Object> c = obj.getClass();
+            Method m[] = c.getMethods();
+            for (int i = 0; i < m.length; i++) {
+                if (m[i].getName().indexOf("get") == 0) {
+                    String name = m[i].getName().toLowerCase().substring(3, 4) + m[i].getName().substring(4);
+                    Field fields = Field.class.getDeclaredField(name);
+                    SerializedName sName = fields.getAnnotation(SerializedName.class);
+                    hashMap.put(sName.value(), m[i].invoke(obj, new Object[0]) != null ? m[i].invoke(obj,
+                            new Object[0]) : new Object());
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return hashMap;
+    }
+
     public void download(String url, File fileDownload, ProgressDownloadListener
             progressDownloadListener, Context context) {
         okHttpClient = getUnsafeOkHttpClient();
@@ -115,13 +137,11 @@ public class OKHttpConnection<T, E> extends Header {
         }
     }
 
-
     public void data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
                      Context context) {
         okHttpClient = getUnsafeOkHttpClient();
         execute(t, url, eClass, httpMethod, mediaType, context);
     }
-
 
     private void execute(T t, String url, Class<E> eClass,
                          int httpMethod, MediaType mediaType, Context context) {
@@ -176,7 +196,6 @@ public class OKHttpConnection<T, E> extends Header {
         }
     }
 
-
     private RequestBody bodyForm(T t) {
         Map<String, Object> objectMap = pojo2Map(t);
         FormBody.Builder formBody = new FormBody.Builder();
@@ -184,24 +203,6 @@ public class OKHttpConnection<T, E> extends Header {
             formBody.add(key, String.valueOf(objectMap.get(key)));
         }
         return formBody.build();
-    }
-
-    public final static Map<String, Object> pojo2Map(Object obj) {
-        Map<String, Object> hashMap = new HashMap<String, Object>();
-        try {
-            Class<? extends Object> c = obj.getClass();
-            Method m[] = c.getMethods();
-            for (int i = 0; i < m.length; i++) {
-                if (m[i].getName().indexOf("get") == 0) {
-                    String name = m[i].getName().toLowerCase().substring(3, 4) + m[i].getName().substring(4);
-                    hashMap.put(name, m[i].invoke(obj, new Object[0]) != null ? m[i].invoke(obj,
-                            new Object[0]) : new Object());
-                }
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        return hashMap;
     }
 
     private OkHttpClient getUnsafeOkHttpClient() {
