@@ -78,7 +78,7 @@ public class OKHttpConnection<T, E> extends Header {
                     String name = m[i].getName().toLowerCase().substring(3, 4) + m[i].getName().substring(4);
                     SerializedName sName = null;
                     try {
-                        Field fields = Field.class.getDeclaredField(name);
+                        Field fields = obj.getClass().getDeclaredField(name);
                         sName = fields.getAnnotation(SerializedName.class);
                     } catch (NoSuchFieldException e) {
                         e.printStackTrace();
