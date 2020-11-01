@@ -18,14 +18,14 @@ import rx.Subscriber;
 
 public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observable.OnSubscribe<BaseResponse<RESPONSE>> {
     @Getter
+    private final Context context;
+    private final String url;
+    @Getter
     private REQUEST request;
     @Getter
     private OKHttpConnection<REQUEST, RESPONSE> teokHttpConnection;
-    @Getter
-    private final Context context;
     private MediaType mediaType;
     private Class<RESPONSE> eClass;
-    private final String url;
     private int httpMethod;
     private String userType;
     private Subscriber<? super BaseResponse<RESPONSE>> subscriber;
@@ -37,45 +37,11 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     private int connectionTimeout = 1;
     private int readTimeout = 1;
     private int writeTimeout = 1;
-
-
-    public HttpRequest<REQUEST, RESPONSE> setReadTimeout(int readTimeout) {
-        this.readTimeout = readTimeout;
-        return this;
-    }
-
-    public HttpRequest<REQUEST, RESPONSE> setWriteTimeout(int writeTimeout) {
-        this.writeTimeout = writeTimeout;
-        return this;
-    }
-
-
-    public HttpRequest<REQUEST, RESPONSE> setConnectionTimeout(int connectionTimeout) {
-        this.connectionTimeout = connectionTimeout;
-        return this;
-    }
+    private String mediaTypeInfo = "charset=utf-8";
     private ProgressDownloadListener progressDownloadListener;
-
-    public HttpRequest<REQUEST, RESPONSE> setCallBackForLog(CallBackForLog callBackForLog) {
-        this.callBackForLog = callBackForLog;
-        return this;
-    }
-
     private CallBackForLog callBackForLog;
-
-    public HttpRequest<REQUEST, RESPONSE> setMessage(String message) {
-        this.message = message;
-        return this;
-    }
-
     @Getter
     private String message;
-
-    public HttpRequest<REQUEST, RESPONSE> setLogInfoRequestResponse(boolean logInfoRequestResponse) {
-        this.logInfoRequestResponse = logInfoRequestResponse;
-        return this;
-    }
-
 
     public HttpRequest(REQUEST request, Context context, Class<RESPONSE> resultClass, String url,
                        int httpMethod) {
@@ -87,7 +53,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         this.httpMethod = httpMethod;
         teokHttpConnection = new OKHttpConnection(this);
         this.mediaType = MediaType.parse(org.androidannotations.api.rest.MediaType.APPLICATION_JSON
-                + "; charset=utf-8");
+                + "; " + mediaTypeInfo);
     }
 
     public HttpRequest(Context context, String url, File fileDownload, ProgressDownloadListener progressDownloadListener) {
@@ -108,11 +74,52 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         this.httpMethod = httpMethod;
         teokHttpConnection = new OKHttpConnection(this);
         this.mediaType = MediaType.parse(org.androidannotations.api.rest.MediaType.APPLICATION_JSON
-                + "; charset=utf-8");
+                + "; " + mediaTypeInfo);
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setWriteTimeout(int writeTimeout) {
+        this.writeTimeout = writeTimeout;
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setCallBackForLog(CallBackForLog callBackForLog) {
+        this.callBackForLog = callBackForLog;
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setMessage(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setLogInfoRequestResponse(boolean logInfoRequestResponse) {
+        this.logInfoRequestResponse = logInfoRequestResponse;
+        return this;
     }
 
     public HttpRequest<REQUEST, RESPONSE> setMediaType(String mediaType) {
-        this.mediaType = MediaType.parse(mediaType + "; charset=utf-8");
+        this.mediaType = MediaType.parse(mediaType + "; " + mediaTypeInfo);
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setMediaType(String mediaType, String mediaTypeInfo) {
+        this.mediaTypeInfo = mediaTypeInfo;
+        this.mediaType = MediaType.parse(mediaType + "; " + mediaTypeInfo);
+        return this;
+    }
+
+    public HttpRequest<REQUEST, RESPONSE> setMediaTypeInfo(String mediaTypeInfo) {
+        this.mediaTypeInfo = mediaTypeInfo;
         return this;
     }
 
@@ -146,7 +153,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
             teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
             teokHttpConnection.setCallBackForLog(callBackForLog);
             teokHttpConnection.data(request, url, eClass, httpMethod, formData ?
-                    MediaType.parse(org.androidannotations.api.rest.MediaType.MULTIPART_FORM_DATA) :
+                    MediaType.parse(org.androidannotations.api.rest.MediaType.MULTIPART_FORM_DATA + "; " + mediaTypeInfo) :
                     mediaType, context);
         }
     }
