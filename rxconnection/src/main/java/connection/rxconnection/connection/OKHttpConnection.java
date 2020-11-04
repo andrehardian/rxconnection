@@ -146,15 +146,15 @@ public class OKHttpConnection<T, E> extends Header {
                      MediaType mediaTypeResponse,
                      Context context) {
         okHttpClient = getUnsafeOkHttpClient();
-        execute(t, url, eClass, httpMethod, mediaTypeRequest,mediaTypeResponse, context);
+        execute(t, url, eClass, httpMethod, mediaTypeRequest, mediaTypeResponse, context);
     }
 
     private void execute(T t, String url, Class<E> eClass,
-                         int httpMethod, MediaType mediaTypeRequest,MediaType mediaTypeResponse, Context context) {
+                         int httpMethod, MediaType mediaTypeRequest, MediaType mediaTypeResponse, Context context) {
         Request request = null;
         switch (httpMethod) {
             case HttpMethod.POST:
-                RequestBody requestBody = createBody(mediaTypeRequest,mediaTypeResponse, t);
+                RequestBody requestBody = createBody(mediaTypeRequest, mediaTypeResponse, t);
                 request = new Request.Builder().headers(headers(context)).post(requestBody).url(url).build();
                 break;
             case HttpMethod.GET:
@@ -180,7 +180,8 @@ public class OKHttpConnection<T, E> extends Header {
             MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
             if (t instanceof BaseModelRequestFormData) {
                 BaseModelRequestFormData baseModelRequestFormData = (BaseModelRequestFormData) t;
-                multipartBodyBuilder.setType(mediaTypeRequest);
+                if (mediaTypeRequest != null)
+                    multipartBodyBuilder.setType(mediaTypeRequest);
                 if (baseModelRequestFormData.getModelFormData() != null) {
                     for (ModelFormData modelFormData : baseModelRequestFormData.getModelFormData()) {
                         if (modelFormData.getValue() instanceof File) {
