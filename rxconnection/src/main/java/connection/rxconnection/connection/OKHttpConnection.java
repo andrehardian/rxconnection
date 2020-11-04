@@ -49,6 +49,8 @@ public class OKHttpConnection<T, E> extends Header {
     @Setter
     private boolean formData;
     @Setter
+    private boolean boundary;
+    @Setter
     private int connectionTimeOut;
     @Setter
     private int readTimeOut;
@@ -179,7 +181,8 @@ public class OKHttpConnection<T, E> extends Header {
             MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
             if (t instanceof BaseModelRequestFormData) {
                 BaseModelRequestFormData baseModelRequestFormData = (BaseModelRequestFormData) t;
-                multipartBodyBuilder.setType(MultipartBody.FORM);
+                multipartBodyBuilder.setType(MediaType.parse("multipart/form-data" +
+                        (boundary ? ("; boundary=gc04JqM2Yt08jU534c0p") : "")));
                 if (baseModelRequestFormData.getModelFormData() != null) {
                     for (ModelFormData modelFormData : baseModelRequestFormData.getModelFormData()) {
                         if (modelFormData.getValue() instanceof File) {

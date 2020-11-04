@@ -31,6 +31,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     private Subscriber<? super BaseResponse<RESPONSE>> subscriber;
     private Map<String, String> customHeader;
     private boolean formData;
+    private boolean boundary;
     private boolean logInfoRequestResponse;
     private boolean downloadFile;
     private File fileDownload;
@@ -137,6 +138,10 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         this.formData = formData;
         return this;
     }
+    public HttpRequest<REQUEST, RESPONSE> setBoundary(boolean boundary) {
+        this.boundary = boundary;
+        return this;
+    }
 
 
     @Override
@@ -150,10 +155,11 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
             teokHttpConnection.setReadTimeOut(readTimeout);
             teokHttpConnection.setWriteTimeOut(writeTimeout);
             teokHttpConnection.setFormData(formData);
+            teokHttpConnection.setBoundary(boundary);
             teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
             teokHttpConnection.setCallBackForLog(callBackForLog);
             teokHttpConnection.data(request, url, eClass, httpMethod, formData ?
-                    MediaType.parse(org.androidannotations.api.rest.MediaType.MULTIPART_FORM_DATA + "; " + mediaTypeInfo) :
+                    MediaType.parse(org.androidannotations.api.rest.MediaType.MULTIPART_FORM_DATA) :
                     mediaType, context);
         }
     }
