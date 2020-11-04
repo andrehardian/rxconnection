@@ -30,8 +30,8 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     private String userType;
     private Subscriber<? super BaseResponse<RESPONSE>> subscriber;
     private Map<String, String> customHeader;
-    private boolean formData;
-    private boolean boundary;
+    @Getter
+    private boolean multipart;
     private boolean logInfoRequestResponse;
     private boolean downloadFile;
     private File fileDownload;
@@ -134,14 +134,11 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         return this;
     }
 
-    public HttpRequest<REQUEST, RESPONSE> setFormData(boolean formData) {
-        this.formData = formData;
+    public HttpRequest<REQUEST, RESPONSE> setMultipart(boolean multipart) {
+        this.multipart = multipart;
         return this;
     }
-    public HttpRequest<REQUEST, RESPONSE> setBoundary(boolean boundary) {
-        this.boundary = boundary;
-        return this;
-    }
+
 
 
     @Override
@@ -154,13 +151,10 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
             teokHttpConnection.setConnectionTimeOut(connectionTimeout);
             teokHttpConnection.setReadTimeOut(readTimeout);
             teokHttpConnection.setWriteTimeOut(writeTimeout);
-            teokHttpConnection.setFormData(formData);
-            teokHttpConnection.setBoundary(boundary);
+            teokHttpConnection.setMultipart(multipart);
             teokHttpConnection.setLogInfoRequestResponse(logInfoRequestResponse);
             teokHttpConnection.setCallBackForLog(callBackForLog);
-            teokHttpConnection.data(request, url, eClass, httpMethod, formData ?
-                    MediaType.parse(org.androidannotations.api.rest.MediaType.MULTIPART_FORM_DATA) :
-                    mediaType, context);
+            teokHttpConnection.data(request, url, eClass, httpMethod, mediaType, context);
         }
     }
 

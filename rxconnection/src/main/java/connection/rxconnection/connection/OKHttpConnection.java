@@ -47,9 +47,7 @@ import okhttp3.TlsVersion;
 public class OKHttpConnection<T, E> extends Header {
     private final CallBackOKHttp callBackOKHttp;
     @Setter
-    private boolean formData;
-    @Setter
-    private boolean boundary;
+    private boolean multipart;
     @Setter
     private int connectionTimeOut;
     @Setter
@@ -177,7 +175,7 @@ public class OKHttpConnection<T, E> extends Header {
     }
 
     private RequestBody createBody(MediaType mediaType, T t) {
-        if (formData) {
+        if (multipart) {
             MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
             if (t instanceof BaseModelRequestFormData) {
                 BaseModelRequestFormData baseModelRequestFormData = (BaseModelRequestFormData) t;
