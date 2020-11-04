@@ -142,29 +142,30 @@ public class OKHttpConnection<T, E> extends Header {
         }
     }
 
-    public void data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaType,
+    public void data(T t, String url, Class<E> eClass, int httpMethod, MediaType mediaTypeRequest,
+                     MediaType mediaTypeResponse,
                      Context context) {
         okHttpClient = getUnsafeOkHttpClient();
-        execute(t, url, eClass, httpMethod, mediaType, context);
+        execute(t, url, eClass, httpMethod, mediaTypeRequest,mediaTypeResponse, context);
     }
 
     private void execute(T t, String url, Class<E> eClass,
-                         int httpMethod, MediaType mediaType, Context context) {
+                         int httpMethod, MediaType mediaTypeRequest,MediaType mediaTypeResponse, Context context) {
         Request request = null;
         switch (httpMethod) {
             case HttpMethod.POST:
-                RequestBody requestBody = createBody(mediaType, t);
+                RequestBody requestBody = createBody(mediaTypeRequest,mediaTypeResponse, t);
                 request = new Request.Builder().headers(headers(context)).post(requestBody).url(url).build();
                 break;
             case HttpMethod.GET:
                 request = new Request.Builder().headers(headers(context)).url(url).get().build();
                 break;
             case HttpMethod.PUT:
-                requestBody = createBody(mediaType, t);
+                requestBody = createBody(mediaTypeRequest, mediaTypeResponse, t);
                 request = new Request.Builder().headers(headers(context)).put(requestBody).url(url).build();
                 break;
             case HttpMethod.DELETE:
-                requestBody = createBody(mediaType, t);
+                requestBody = createBody(mediaTypeRequest, mediaTypeResponse, t);
                 request = new Request.Builder().headers(headers(context)).delete(requestBody).url(url).build();
                 break;
         }
@@ -174,18 +175,18 @@ public class OKHttpConnection<T, E> extends Header {
 
     }
 
-    private RequestBody createBody(MediaType mediaType, T t) {
+    private RequestBody createBody(MediaType mediaTypeRequest, MediaType mediaTypeResponse, T t) {
         if (multipart) {
             MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
             if (t instanceof BaseModelRequestFormData) {
                 BaseModelRequestFormData baseModelRequestFormData = (BaseModelRequestFormData) t;
-                multipartBodyBuilder.setType(mediaType);
+                multipartBodyBuilder.setType(mediaTypeRequest);
                 if (baseModelRequestFormData.getModelFormData() != null) {
                     for (ModelFormData modelFormData : baseModelRequestFormData.getModelFormData()) {
                         if (modelFormData.getValue() instanceof File) {
                             multipartBodyBuilder.addFormDataPart(modelFormData.getKey(), ((File) modelFormData.getValue())
                                             .getName(),
-                                    RequestBody.create(mediaType, (File) modelFormData.getValue()));
+                                    RequestBody.create(mediaTypeResponse, (File) modelFormData.getValue()));
                         } else {
                             multipartBodyBuilder.addFormDataPart(modelFormData.getKey(),
                                     (String) modelFormData.getValue());
@@ -194,10 +195,10 @@ public class OKHttpConnection<T, E> extends Header {
                 }
             }
             return multipartBodyBuilder.build();
-        } else if (mediaType.toString().contains("form")) {
+        } else if (mediaTypeResponse.toString().contains("form")) {
             return bodyForm(t);
         } else {
-            return RequestBody.create(mediaType, new Gson().toJson(t));
+            return RequestBody.create(mediaTypeResponse, new Gson().toJson(t));
         }
     }
 
