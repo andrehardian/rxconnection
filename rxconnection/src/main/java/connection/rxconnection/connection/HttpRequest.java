@@ -46,7 +46,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
 
     private  Class<RESPONSE> makeResultClass() {
         return ((Class<RESPONSE>) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[0]);
+                .getGenericSuperclass()).getActualTypeArguments()[1]);
     }
 
 
