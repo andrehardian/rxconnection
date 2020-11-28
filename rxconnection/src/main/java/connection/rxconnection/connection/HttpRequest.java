@@ -3,6 +3,7 @@ package connection.rxconnection.connection;
 import android.content.Context;
 
 import java.io.File;
+import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 
 import connection.rxconnection.model.BaseResponse;
@@ -43,12 +44,18 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     @Getter
     private String message;
 
-    public HttpRequest(REQUEST request, Context context, Class<RESPONSE> resultClass, String url,
+    private  Class<RESPONSE> makeResultClass() {
+        return ((Class<RESPONSE>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0]);
+    }
+
+
+    public HttpRequest(REQUEST request, Context context, String url,
                        int httpMethod) {
 //        super(f);
         this.request = request;
         this.context = context;
-        this.eClass = resultClass;
+        this.eClass = makeResultClass();
         this.url = url;
         this.httpMethod = httpMethod;
         teokHttpConnection = new OKHttpConnection(this);
@@ -66,10 +73,10 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         teokHttpConnection = new OKHttpConnection(this);
     }
 
-    public HttpRequest(Context context, Class<RESPONSE> resultClass, String url, int httpMethod) {
+    public HttpRequest(Context context, String url, int httpMethod) {
 //        super(f);
         this.context = context;
-        this.eClass = resultClass;
+        this.eClass = makeResultClass();
         this.url = url;
         this.httpMethod = httpMethod;
         teokHttpConnection = new OKHttpConnection(this);
