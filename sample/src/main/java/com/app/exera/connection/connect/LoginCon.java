@@ -5,8 +5,6 @@ import android.content.Context;
 import com.app.exera.connection.model.LoginResponse;
 import com.app.exera.connection.model.RequestLogin;
 
-import java.util.ArrayList;
-
 import connection.rxconnection.connection.HttpMethod;
 import connection.rxconnection.connection.HttpRequest;
 
@@ -16,6 +14,6 @@ import connection.rxconnection.connection.HttpRequest;
 
 public class LoginCon extends HttpRequest<RequestLogin, LoginResponse[]> {
     public LoginCon(RequestLogin loginRequest, Context context) {
-        super(loginRequest, context, URL.LOGIN, HttpMethod.POST);
+        super(loginRequest, context, LoginResponse[].class, URL.LOGIN, HttpMethod.POST);
     }
 }
