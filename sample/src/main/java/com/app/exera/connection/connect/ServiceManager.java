@@ -24,6 +24,7 @@ public class ServiceManager extends ConnectionManager implements ProgressDownloa
     }
 
     public void download(String s) {
+/*
         HttpRequest httpRequest = new ConDownloadDB(getContext(), s,
                 new File(Environment.getExternalStorageDirectory().getPath()),
                 this);
@@ -31,6 +32,7 @@ public class ServiceManager extends ConnectionManager implements ProgressDownloa
         header.put("version", BuildConfig.VERSION_NAME);
         httpRequest.setCustomHeader(header);
         subscribe(httpRequest);
+*/
     }
 
     @Override

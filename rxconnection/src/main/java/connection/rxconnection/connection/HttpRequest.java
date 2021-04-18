@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.io.File;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import connection.rxconnection.model.BaseResponse;
@@ -44,12 +45,6 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     @Getter
     private String message;
 
-    private  Class<RESPONSE> makeResultClass() {
-        return ((Class<RESPONSE>) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[1]);
-    }
-
-
     public HttpRequest(REQUEST request, Context context, String url,
                        int httpMethod) {
 //        super(f);
@@ -62,6 +57,7 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         this.mediaTypeResponse = MediaType.parse(org.androidannotations.api.rest.MediaType.APPLICATION_JSON
                 + "; charset=utf-8");
     }
+
 
     public HttpRequest(Context context, String url, File fileDownload, ProgressDownloadListener progressDownloadListener) {
 //        super(f);
@@ -82,6 +78,13 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
         teokHttpConnection = new OKHttpConnection(this);
         this.mediaTypeResponse = MediaType.parse(org.androidannotations.api.rest.MediaType.APPLICATION_JSON
                 + "; charset=utf-8");
+    }
+
+    private Class<RESPONSE> makeResultClass() {
+        ParameterizedType parameterizedType = ((ParameterizedType) getClass()
+                .getGenericSuperclass());
+        Type[] type = parameterizedType.getActualTypeArguments();
+        return ((Class<RESPONSE>) type[1]);
     }
 
     public HttpRequest<REQUEST, RESPONSE> setReadTimeout(int readTimeout) {

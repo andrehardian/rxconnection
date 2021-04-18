@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         download("https://s3.ap-southeast-1.amazonaws.com/dev.pawoon.com/backup/3003-1544528282.db");
+        login();
     }
 
     private void download(String s) {
