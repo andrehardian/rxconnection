@@ -45,6 +45,33 @@ public class HttpRequest<REQUEST, RESPONSE> implements CallBackOKHttp, Observabl
     @Getter
     private String message;
 
+
+    public HttpRequest(REQUEST request, Context context, Class<RESPONSE> resultClass, String url,
+                       int httpMethod) {
+//        super(f);
+        this.request = request;
+        this.context = context;
+        this.eClass = resultClass;
+        this.url = url;
+        this.httpMethod = httpMethod;
+        teokHttpConnection = new OKHttpConnection(this);
+        this.mediaTypeResponse = MediaType.parse(org.androidannotations.api.rest.MediaType.APPLICATION_JSON
+                + "; charset=utf-8");
+    }
+
+
+    public HttpRequest(Context context, Class<RESPONSE> resultClass, String url, int httpMethod) {
+//        super(f);
+        this.context = context;
+        this.eClass = resultClass;
+        this.url = url;
+        this.httpMethod = httpMethod;
+        teokHttpConnection = new OKHttpConnection(this);
+        this.mediaTypeResponse = MediaType.parse(org.androidannotations.api.rest.MediaType.APPLICATION_JSON
+                + "; charset=utf-8");
+    }
+
+
     public HttpRequest(REQUEST request, Context context, String url,
                        int httpMethod) {
 //        super(f);
