@@ -58,7 +58,7 @@ public class ConnectionManager implements CallBackSubscriber {
         }
     }
 
-    private void subs(HttpRequest httpRequest) {
+    protected void subs(HttpRequest httpRequest) {
         if (sessionRun.isRun()) {
             Observable.create(httpRequest)
                     .subscribeOn(Schedulers.newThread())
@@ -95,7 +95,7 @@ public class ConnectionManager implements CallBackSubscriber {
         }
     }
 
-    private void subs(HttpRequest httpRequest, String message) {
+    protected void subs(HttpRequest httpRequest, String message) {
         if (sessionRun.isRun()) {
         Observable.create(httpRequest.setMessage(message))
                 .subscribeOn(Schedulers.newThread())
