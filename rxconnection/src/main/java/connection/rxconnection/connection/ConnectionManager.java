@@ -60,8 +60,12 @@ public class ConnectionManager implements CallBackSubscriber {
                     .unsubscribeOn(Schedulers.newThread())
                     .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
         }else {
-            getConnectionListener().unAuthorized(null, null);
+            getSession();
         }
+    }
+
+    protected void getSession() {
+
     }
 
     protected void subscribe(HttpRequest httpRequest, String message) {
@@ -85,7 +89,7 @@ public class ConnectionManager implements CallBackSubscriber {
                     .unsubscribeOn(Schedulers.newThread())
                     .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
         } else {
-            getConnectionListener().unAuthorized(null, null);
+            getSession();
         }
     }
 
