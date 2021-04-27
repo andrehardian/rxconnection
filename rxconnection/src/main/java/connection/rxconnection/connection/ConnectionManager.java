@@ -54,12 +54,18 @@ public class ConnectionManager implements CallBackSubscriber {
                 e.printStackTrace();
             }
             requestSize += 1;
+            subs(httpRequest);
+        }
+    }
+
+    private void subs(HttpRequest httpRequest) {
+        if (sessionRun.isRun()) {
             Observable.create(httpRequest)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
-        }else {
+        } else {
             getSession();
         }
     }
@@ -83,11 +89,19 @@ public class ConnectionManager implements CallBackSubscriber {
                 e.printStackTrace();
             }
             requestSize += 1;
-            Observable.create(httpRequest.setMessage(message))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
+            subs(httpRequest,message);
+        } else {
+            getSession();
+        }
+    }
+
+    private void subs(HttpRequest httpRequest, String message) {
+        if (sessionRun.isRun()) {
+        Observable.create(httpRequest.setMessage(message))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
         } else {
             getSession();
         }
