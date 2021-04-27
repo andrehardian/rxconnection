@@ -3,6 +3,7 @@ package connection.rxconnection.connection;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import connection.rxconnection.session.SessionRun;
 import lombok.Getter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -13,14 +14,19 @@ import rx.schedulers.Schedulers;
  */
 
 public class ConnectionManager implements CallBackSubscriber {
+    protected int requestSize = 0;
     @Getter
     private Context context;
     @Getter
     private boolean show = true;
-    protected int requestSize = 0;
+    private SessionRun sessionRun;
+    @Getter
+    private ConnectionListener connectionListener;
+    private ProgressDialog progressDialog;
 
     public ConnectionManager setContext(Context context) {
         this.context = context;
+        sessionRun = new SessionRun(context);
         return this;
     }
 
@@ -34,51 +40,53 @@ public class ConnectionManager implements CallBackSubscriber {
         return this;
     }
 
-    @Getter
-    private ConnectionListener connectionListener;
-
-    private ProgressDialog progressDialog;
-
     protected void subscribe(HttpRequest httpRequest) {
-        try {
-            if (progressDialog == null) {
-                progressDialog = new ProgressDialog(context);
-                progressDialog.setCancelable(false);
+        if (sessionRun.isRun()) {
+            try {
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(context);
+                    progressDialog.setCancelable(false);
+                }
+                if (!progressDialog.isShowing() && show) {
+                    progressDialog.show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (!progressDialog.isShowing() && show) {
-                progressDialog.show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            requestSize += 1;
+            Observable.create(httpRequest)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
+        }else {
+            getConnectionListener().unAuthorized(null, null);
         }
-        requestSize += 1;
-        Observable.create(httpRequest)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
     }
 
     protected void subscribe(HttpRequest httpRequest, String message) {
-
-        try {
-            if (progressDialog == null && context != null) {
-                progressDialog = new ProgressDialog(context);
-                progressDialog.setCancelable(false);
-                progressDialog.setMessage(message);
+        if (sessionRun.isRun()) {
+            try {
+                if (progressDialog == null && context != null) {
+                    progressDialog = new ProgressDialog(context);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setMessage(message);
+                }
+                if (!progressDialog.isShowing() && show) {
+                    progressDialog.show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (!progressDialog.isShowing() && show) {
-                progressDialog.show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            requestSize += 1;
+            Observable.create(httpRequest.setMessage(message))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
+        } else {
+            getConnectionListener().unAuthorized(null, null);
         }
-        requestSize += 1;
-        Observable.create(httpRequest.setMessage(message))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(new BaseServiceResponse(connectionListener).setCallBackSubscriber(this));
     }
 
     @Override
