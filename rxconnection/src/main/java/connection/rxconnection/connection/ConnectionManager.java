@@ -55,6 +55,8 @@ public class ConnectionManager implements CallBackSubscriber {
             }
             requestSize += 1;
             subs(httpRequest);
+        }else {
+            getSession();
         }
     }
 
