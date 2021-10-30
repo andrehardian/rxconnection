@@ -1,28 +1,33 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
 }
-
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.github.andrehardian'
 
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = "your.package.name"
+                artifactId = "your_lib_name"
+                version = 'lib_version'
+            }
+        }
+    }
+}
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "26.0.2"
+    compileSdk 30
 
     defaultConfig {
-        minSdkVersion 17
-        targetSdkVersion 25
-        versionCode 23
-        versionName "2.2.2"
+        minSdk 23
+        targetSdk 30
+        versionCode 24
+        versionName "3.0.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -33,18 +38,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    testCompile 'junit:junit:4.12'
-    provided 'org.projectlombok:lombok:1.12.6'
-    annotationProcessor "org.projectlombok:lombok:1.12.6"
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'org.androidannotations:androidannotations-api:3.0.1'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'io.reactivex:rxjava:1.0.14'
+    testImplementation 'junit:junit:4.+'
+    compileOnly 'org.projectlombok:lombok:1.18.2'
+    annotationProcessor "org.projectlombok:lombok:1.18.2"
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    api 'com.google.code.gson:gson:2.7'
+    implementation 'org.androidannotations:androidannotations-api:3.0.1'
+    api 'io.reactivex:rxandroid:1.0.1'
+    api 'io.reactivex:rxjava:1.0.14'
 
 }

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rxconnection.iml" filepath="$PROJECT_DIR$/.idea/modules/rxconnection.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rxconnection/rxconnection.rxconnection.iml" filepath="$PROJECT_DIR$/.idea/modules/rxconnection/rxconnection.rxconnection.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sample/rxconnection.sample.iml" filepath="$PROJECT_DIR$/.idea/modules/sample/rxconnection.sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RXConnection.iml" filepath="$PROJECT_DIR$/.idea/modules/RXConnection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rxconnection/RXConnection.rxconnection.iml" filepath="$PROJECT_DIR$/.idea/modules/rxconnection/RXConnection.rxconnection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sample/RXConnection.sample.iml" filepath="$PROJECT_DIR$/.idea/modules/sample/RXConnection.sample.iml" />
     </modules>
   </component>
 </project>

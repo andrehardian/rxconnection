@@ -1,8 +1,9 @@
 package com.app.exera.connection;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.app.exera.connection.connect.ServiceManager;
 import com.app.exera.connection.model.RequestLogin;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
         ((ServiceManager) new ServiceManager().setContext(this).setConnectionListener(this))
                 .download(s);
     }
+
     private void login() {
         ((ServiceManager) new ServiceManager().setContext(this).setConnectionListener(this))
                 .login(new RequestLogin().setUsername("kanibal@me.com").setPassword("kanibal"));
@@ -45,12 +47,12 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
 
     @Override
     public void onError(Object o, HttpRequest httpRequest) {
-        Toast.makeText(this,(String)o,Toast.LENGTH_LONG);
+        Toast.makeText(this, (String) o, Toast.LENGTH_LONG);
 //error 400,403,500,etc
     }
 
     @Override
-    public void unAuthorized(HttpRequest httpRequest,String messageError) {
+    public void unAuthorized(HttpRequest httpRequest, String messageError) {
 //error 401 auto logout unauthorized
     }
 }
