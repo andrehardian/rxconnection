@@ -23,6 +23,11 @@ public class ServiceManager extends ConnectionManager implements ProgressDownloa
         subscribe(new LoginCon(loginRequest, getContext()).setLogInfoRequestResponse(true));
     }
 
+    public void testKong() {
+        subscribe(new Test(getContext()), "");
+    }
+
+
     public void download(String s) {
 /*
         HttpRequest httpRequest = new ConDownloadDB(getContext(), s,
@@ -37,11 +42,11 @@ public class ServiceManager extends ConnectionManager implements ProgressDownloa
 
     @Override
     public void progress(long progress) {
-        Log.d("test", progress + "");
+        Log.d("crot", progress + "");
     }
 
     @Override
     public void error(String body) {
-        Log.d("test", body);
+        Log.d("crot", body);
     }
 }

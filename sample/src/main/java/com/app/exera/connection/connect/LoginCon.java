@@ -7,6 +7,7 @@ import com.app.exera.connection.model.RequestLogin;
 
 import connection.rxconnection.connection.HttpMethod;
 import connection.rxconnection.connection.HttpRequest;
+import okhttp3.MediaType;
 
 /**
  * Created by AndreHF on 11/14/2017.
