@@ -17,16 +17,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        download("https://s3.ap-southeast-1.amazonaws.com/dev.pawoon.com/backup/3003-1544528282.db");
-//        login();
-        test();
+        download("https://s3.ap-southeast-1.amazonaws.com/dev.pawoon.com/backup/3003-1544528282.db");
+        login();
     }
 
-    private void test() {
-        ((ServiceManager) new ServiceManager().setContext(this).setConnectionListener(this))
-                .testKong();
-
-    }
 
     private void download(String s) {
         ((ServiceManager) new ServiceManager().setContext(this).setConnectionListener(this))

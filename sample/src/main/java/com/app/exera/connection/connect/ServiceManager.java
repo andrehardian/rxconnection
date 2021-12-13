@@ -23,9 +23,6 @@ public class ServiceManager extends ConnectionManager implements ProgressDownloa
         subscribe(new LoginCon(loginRequest, getContext()).setLogInfoRequestResponse(true));
     }
 
-    public void testKong() {
-        subscribe(new Test(getContext()), "");
-    }
 
 
     public void download(String s) {
